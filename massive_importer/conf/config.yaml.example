@@ -1,0 +1,25 @@
+
+# Database conf
+database:
+  host: ''
+  port: ''
+  database: ''
+  user: ''
+  password: ''
+
+# Minio conf
+minio:
+  endpoint: ''
+  access_key: ''
+  secret_key: ''
+  secure: True
+
+# Erp conf
+erp:
+  server: ''
+  db: ''
+  user: ''
+  password: ''
+
+log_level: 'INFO'
+log_dir: ''
