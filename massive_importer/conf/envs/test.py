@@ -1,11 +1,25 @@
 from .base import *
+from apscheduler.executors.pool import ThreadPoolExecutor
 
 
 MINIO = {
     'endpoint': 'localhost:9000',
-    'access_key': 'ZJXAA7MQOGXF01F0QKUH',
-    'secret_key': 'GSEHnN2zDuMtbxtEc2vdXiaUbYs+tP2mdG45S5jK',
+    'access_key': 'NJHXYRAAILTKUVSXWDP9',
+    'secret_key': 'IqoH+bHYxkfE8xvmLpMdaxjLGJkmhria3Qxi9Q73',
     'secure': False
+}
+
+DATABASE = {
+    'provider': 'postgres',
+    'host': 'localhost',
+    'port': 5432,
+    'database': 'test_importer',
+    'user': 'postgres',
+    'password': 'postgres'
+}
+
+EXECUTORS = {
+    'default': ThreadPoolExecutor(max_workers=10)
 }
 
 LOGGING = {
