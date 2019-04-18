@@ -3,19 +3,26 @@ from apscheduler.executors.pool import ThreadPoolExecutor
 
 
 MINIO = {
-    'endpoint': 'localhost:9000',
-    'access_key': 'NJHXYRAAILTKUVSXWDP9',
-    'secret_key': 'IqoH+bHYxkfE8xvmLpMdaxjLGJkmhria3Qxi9Q73',
-    'secure': False
+    'endpoint': minio_conf['endpoint'],
+    'access_key': minio_conf['access_key'],
+    'secret_key': minio_conf['secret_key'],
+    'secure': minio_conf['secure']
+}
+
+ERP = {
+    'server': erp_conf['server'],
+    'db': erp_conf['db'],
+    'user': erp_conf['user'],
+    'password': erp_conf['password']
 }
 
 DATABASE = {
     'provider': 'postgres',
-    'host': 'localhost',
-    'port': 5432,
-    'database': 'test_importer',
-    'user': 'postgres',
-    'password': 'postgres'
+    'host': database_conf['host'],
+    'port': database_conf['port'],
+    'database': database_conf['database'],
+    'user': database_conf['user'],
+    'password': database_conf['password']
 }
 
 EXECUTORS = {
