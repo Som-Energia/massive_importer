@@ -11,7 +11,6 @@ from massive_importer.lib import ErpManager
 
 DATA_DIR = os.path.join(settings.BASE_DIR, 'tests/data')
 
-
 class TestErpManager(TestCase):
 
     def setUp(self):
@@ -32,6 +31,8 @@ class TestErpManager(TestCase):
         import_wizard = WizardImportAtrF1.create(values)
         
         context = {'active_ids': [import_wizard.id], 'active_id': import_wizard.id}         
-        res = import_wizard.action_import_xmls()
+        res = import_wizard.action_import_xmls(context)
         self.assertTrue(res)
+        self.assertTrue(import_wizard.state == 'done' or import_wizard.state == 'load' )
+
 
