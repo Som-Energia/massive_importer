@@ -54,3 +54,11 @@ LOGGING = {
         }
     }
 }
+
+MAIL = {
+    'from_address': mail_conf['from_address'],
+    'to_address': mail_conf['to_address'],
+    'host': mail_conf['host'],
+    'port': mail_conf['port'],
+    'password': mail_conf['password']
+}

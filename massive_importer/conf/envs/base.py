@@ -20,6 +20,8 @@ database_conf = massive_importer_conf['database']
 
 erp_conf = massive_importer_conf['erp']
 
-tasks_conf = massive_importer_conf['tasks']
+mail_conf = massive_importer_conf['mail']
+
+# tasks_conf = massive_importer_conf['tasks']
 
 TMP_DIR = os.path.join(BASE_DIR, 'tmp')
