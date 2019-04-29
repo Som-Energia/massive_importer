@@ -27,6 +27,8 @@ class ErpManager(object):
         context = {'active_ids': [import_wizard.id], 'active_id': import_wizard.id}         
         try:  
             res = import_wizard.action_import_xmls(context)
+            mutex.release()
+            return (import_wizard.state == 'done' or import_wizard.state == 'load')
         except Exception as e:
             msg = "An error ocurred importing %s: %s"
             logger.exception(msg, file_name, str(e))

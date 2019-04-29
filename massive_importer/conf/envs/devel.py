@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from .base import *
 from datetime import datetime, timedelta
 from apscheduler.executors.pool import ThreadPoolExecutor
 
@@ -16,16 +17,16 @@ DATABASE = {
     'provider': 'postgres',
     'host': 'localhost',
     'port': 5432,
-    'database': 'massive_importer_db',
-    'user': 'massive_importer',
-    'password': '1234'
+    'database': 'bucketevents_db',
+    'user': 'postgres',
+    'password': 'postgres'
 }
 
 ERP = {
-    'server': '',
-    'db': '',
-    'user': '',
-    'password': ''
+    'server': erp_conf['server'],
+    'db': erp_conf['db'],
+    'user': erp_conf['user'],
+    'password': erp_conf['password']
 }
 
 EXECUTORS = {
@@ -33,13 +34,20 @@ EXECUTORS = {
 }
 
 TASKS = {
-    'import_zips': {
+    'check_new_events': {
         'trigger': 'interval',
         'minutes': 1,
-        'next_run_time': datetime.now() + timedelta(seconds=20)
+        'next_run_time': datetime.now() + timedelta(seconds=5)
     }
 }
 
+MAIL = {
+    'from_address': mail_conf['from_address'],
+    'to_address': mail_conf['to_address'],
+    'host': mail_conf['host'],
+    'port': mail_conf['port'],
+    'password': mail_conf['password']
+}
 
 LOGGING = {
     'version': 1,

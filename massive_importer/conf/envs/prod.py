@@ -2,7 +2,7 @@ from .base import *
 
 
 TASKS = {
-    'import_zips': tasks_conf['import_zips']
+    'check_new_events': tasks_conf['check_new_events']
 }
 
 LOGGING = {
