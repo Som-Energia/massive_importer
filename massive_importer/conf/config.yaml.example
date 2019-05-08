@@ -23,3 +23,11 @@ erp:
 
 log_level: 'INFO'
 log_dir: ''
+
+# Mail conf
+mail: 
+  from_address: ''
+  to_address: ''
+  host: ''
+  port: ''
+  password: ''
