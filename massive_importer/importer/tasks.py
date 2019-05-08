@@ -54,6 +54,7 @@ def check_new_events(impfs = None):
     else: logger.debug("No ImportFiles pending")                    
     logger.debug("***Ya he terminado :)***")
 
+@db_session
 def import_zips(impf):
     updateState(impf, UpdateStatus.IN_PROCESS) 
     content = None 
@@ -72,7 +73,7 @@ def import_zips(impf):
                     updateState(impf, UpdateStatus.ERROR)
                 else:
                     impf.retries = impf.retries +1
-                    check_new_events(impfs=[impf])
+                    import_zips(impf)
             else:       
                 updateState(impf, UpdateStatus.FINISHED) 
                 return True 
