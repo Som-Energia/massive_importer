@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
+from massive_importer.crawlers.run_crawlers import WebCrawler
 from massive_importer.lib.minio_utils import MinioManager
 from massive_importer.lib.alert_utils import AlertManager
 from massive_importer.lib.erp_utils import ErpManager
@@ -9,9 +10,7 @@ from massive_importer.models.importer import Event, ImportFile, UpdateStatus
 from pony.orm import select, db_session, delete
 import concurrent.futures
 from multiprocessing import Process
-import time
-import urllib
-import threading
+import time, urllib, threading
 
 logger = logging.getLogger(__name__)
 minio_manager = MinioManager(**settings.MINIO)
@@ -21,6 +20,14 @@ mutex = threading.Lock()
 
 MAX_NUM_RETRIES = 3
 
+
+def web_crawling():
+    logger.debug("Inici dels crawlers...")
+    wc = WebCrawler()
+    wc.crawlIberdrola()
+    logger.debug("Acabo amb els crawlers!")
+
+    
 @db_session(optimistic=False) 
 def check_new_events(impfs = None): 
     if erp_manager == None : 

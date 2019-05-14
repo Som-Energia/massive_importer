@@ -1,7 +1,6 @@
 import smtplib
 from email import message
 import logging
-from unittest import TestCase
 from massive_importer.conf.startup_configuration import settings
 
 logger = logging.getLogger(__name__)

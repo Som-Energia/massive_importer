@@ -36,7 +36,13 @@ EXECUTORS = {
 TASKS = {
     'check_new_events': {
         'trigger': 'interval',
-        'minutes': 1,
+        'minutes': 1000,
+        'next_run_time': datetime.now() + timedelta(seconds=1000)
+    },
+
+    'web_crawling': {
+        'trigger': 'interval',
+        'minutes': 100,
         'next_run_time': datetime.now() + timedelta(seconds=5)
     }
 }
