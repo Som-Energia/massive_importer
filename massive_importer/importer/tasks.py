@@ -20,13 +20,10 @@ mutex = threading.Lock()
 
 MAX_NUM_RETRIES = 3
 
-
 def web_crawling():
-    logger.debug("Inici dels crawlers...")
-    wc = WebCrawler()
-    wc.crawlIberdrola()
-    logger.debug("Acabo amb els crawlers!")
-
+    logger.debug(">>> CRAWL PROCESS STARTING... ")
+    wc = WebCrawler().crawl()
+    logger.debug(">>> PROCESS DONE!")
     
 @db_session(optimistic=False) 
 def check_new_events(impfs = None): 

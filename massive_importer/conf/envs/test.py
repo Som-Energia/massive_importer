@@ -1,8 +1,10 @@
 from .base import *
 from apscheduler.executors.pool import ThreadPoolExecutor
 
+CRAWLERS = crawlers_conf
 
 MINIO = {
+    'default_bucket': minio_conf['default_bucket'],
     'endpoint': minio_conf['endpoint'],
     'access_key': minio_conf['access_key'],
     'secret_key': minio_conf['secret_key'],

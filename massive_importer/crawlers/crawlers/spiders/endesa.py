@@ -1,11 +1,22 @@
-import scrapy
+import scrapy, logging
 from scrapy_splash import SplashRequest, SplashFormRequest
-from massive_importer.crawlers import endesa_cred as credentials
+from massive_importer.crawlers import all_creds
+import logging, scrapy, datetime, io, cgi
+from massive_importer.crawlers.crawlers.items import zipItem
+from massive_importer.lib import minio_utils
+from massive_importer.lib.minio_utils import MinioManager
+from massive_importer.conf import settings
 
+logger = logging.getLogger(__name__)
+minio_manager = MinioManager(**settings.MINIO)
+credentials = all_creds['endesa']
+
+def instance():
+    return Endesa()
 
 class Endesa(scrapy.Spider):
     name = "endesa"
-
+    
     def start_requests(self):
         urls = [
             'https://portalede.endesa.es/login',

@@ -9,6 +9,7 @@ database:
 
 # Minio conf
 minio:
+  default_bucket: ''
   endpoint: ''
   access_key: ''
   secret_key: ''
@@ -31,3 +32,15 @@ mail:
   host: ''
   port: ''
   password: ''
+
+# Crawlers conf
+crawlers:
+  endesa: ''
+  iberdrola: ''
+  hc: ''
+  fenosa: ''
+  viesgo: ''
+  aseme: ''
+  cide: ''
+  conquense: ''
+  begasa: ''

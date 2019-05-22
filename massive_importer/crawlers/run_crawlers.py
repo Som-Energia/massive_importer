@@ -1,30 +1,31 @@
-import os
 from twisted.internet import reactor
-import scrapy
+import scrapy, logging, os, sys, importlib.util
 from scrapy.crawler import CrawlerRunner
-from scrapy.utils.log import configure_logging
-import logging
-from massive_importer.crawlers.crawlers.spiders.iberdrola import Iberdrola
-from massive_importer.crawlers.crawlers.spiders.endensa import Endesa
+from massive_importer.conf import configure_logging, settings
 
 logger = logging.getLogger(__name__)
-configure_logging({'LOG_FORMAT': '%(levelname)s: %(message)s'})
 
 class WebCrawler:
-    
-    def __init__(self):
-        settings_file_path = 'massive_importer.crawlers.crawlers.settings' # The path seen from root, ie. from main.py
-        self.runner = CrawlerRunner()        
+    def __init__(self):        
+        self.crawlers = settings.CRAWLERS
+        
+    def crawl(self):
+        runner = CrawlerRunner()
+        path = os.path.dirname(os.path.abspath(__file__))
+        spiders_path = os.path.join(path,"crawlers/spiders/")
+        for spider in self.crawlers:
+            if self.crawlers[spider]:
+                try: 
+                    spec = importlib.util.spec_from_file_location(spider, "".join([spiders_path,spider,'.py']))
+                    imp = importlib.util.module_from_spec(spec)
+                    spec.loader.exec_module(imp)
+                    logger.debug("Loaded %s module" % (spider))
+                except Exception as e:
+                    logger.error("Can't import %s module" % (spider))
+                finally:
+                    logger.debug("Starting %s crawling..." % (spider))
+                    runner.crawl(imp.instance())
 
-    def crawlIberdrola(self):
-        logger.debug("Començo Iberdrola...")
-        d = self.runner.crawl(Iberdrola)
+        d = runner.join()
         d.addBoth(lambda _: reactor.stop())
-        reactor.run(installSignalHandlers=False) # the script will block here until the crawling is finished
-        logger.debug("Acabo Iberdrola.")
-
-    def crawlEndesa(self):
-        pass
-    
-    # ...
-    
+        reactor.run(installSignalHandlers=False) # to run in the non-main thread

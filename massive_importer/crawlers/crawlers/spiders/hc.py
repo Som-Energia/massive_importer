@@ -1,6 +1,7 @@
 import scrapy
 import logging
 
+
 logging.basicConfig(level=logging.DEBUG)
 
 class HidroCantabrico(scrapy.Spider):

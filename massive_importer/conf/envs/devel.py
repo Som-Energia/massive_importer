@@ -3,7 +3,7 @@ from .base import *
 from datetime import datetime, timedelta
 from apscheduler.executors.pool import ThreadPoolExecutor
 
-from .base import *
+CRAWLERS = crawlers_conf
 
 
 MINIO = {
