@@ -22,9 +22,9 @@ erp_conf = massive_importer_conf['erp']
 
 mail_conf = massive_importer_conf['mail']
 
-crawlers_conf = massive_importer_conf['crawlers']
-for item in crawlers_conf:
-    crawlers_conf[item] = crawlers_conf[item] == 'True' 
+crawlers_conf = []
+for item in massive_importer_conf['crawlers']:
+    if massive_importer_conf['crawlers'][item] == 'True': crawlers_conf.append(item)
     
 # tasks_conf = massive_importer_conf['tasks']
 

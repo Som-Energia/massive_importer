@@ -8,6 +8,11 @@ def listImportFiles():
     return list(ret)
 
 @db_session
+def listImportFiles_by_date_interval(i_date, f_date):
+    ret = select(impf for impf in ImportFile if (impf.created_at >= i_date and impf.created_at < f_date))
+    return list(ret)
+
+@db_session
 def listEvents():
     ret = select(event for event in Event)
     return list(ret)
