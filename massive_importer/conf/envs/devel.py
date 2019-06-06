@@ -5,28 +5,22 @@ from apscheduler.executors.pool import ThreadPoolExecutor
 
 CRAWLERS = crawlers_conf
 
-
-MINIO = {
-    'endpoint': 'localhost:9000',
-    'access_key': '',
-    'secret_key': '',
-    'secure': True
-}
+MINIO = minio_conf
 
 DATABASE = {
-    'provider': 'postgres',
-    'host': 'localhost',
-    'port': 5432,
-    'database': 'bucketevents_db',
-    'user': 'postgres',
-    'password': 'postgres'
+    'provider': database_conf['provider'],
+    'host': database_conf['host'],
+    'port': database_conf['port'],
+    'database': database_conf['database'],
+    'user': database_conf['user'],
+    'password': database_conf['password'],
 }
 
 ERP = {
     'server': erp_conf['server'],
     'db': erp_conf['db'],
     'user': erp_conf['user'],
-    'password': erp_conf['password']
+    'password': erp_conf['password'],
 }
 
 EXECUTORS = {
@@ -34,16 +28,22 @@ EXECUTORS = {
 }
 
 TASKS = {
-    'check_new_events': {
-        'trigger': 'interval',
-        'minutes': 1000,
-        'next_run_time': datetime.now() + timedelta(seconds=1000)
+    'web_crawling': {
+        'trigger': 'cron',
+        'hour': 21,
+        'minutes': 0,
     },
 
-    'web_crawling': {
-        'trigger': 'interval',
-        'minutes': 100,
-        'next_run_time': datetime.now() + timedelta(seconds=5)
+    'check_new_events': {
+        'trigger': 'cron',
+        'hour': 22,
+        'minute': 0,
+    },
+
+    'summary': {
+        'trigger': 'cron',
+        'hour': 23,
+        'minutes': 30,
     }
 }
 

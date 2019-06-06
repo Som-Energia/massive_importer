@@ -38,3 +38,7 @@ class ErpManager(object):
             
         mutex.release()
         return result
+
+class MockErpManager(object):
+    def import_wizard(self, file_name, file_content):
+        return False

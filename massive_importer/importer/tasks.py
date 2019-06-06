@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging, time, urllib, threading, datetime
+import concurrent.futures
+from multiprocessing import Process
 from datetime import datetime, date, timedelta
 from massive_importer.crawlers.run_crawlers import WebCrawler
 from massive_importer.lib.minio_utils import MinioManager
@@ -9,8 +11,6 @@ from massive_importer.lib.db_utils import listEvents, listImportFiles, listImpor
 from massive_importer.conf import configure_logging, settings
 from massive_importer.models.importer import Event, ImportFile, UpdateStatus
 from pony.orm import select, db_session, delete
-import concurrent.futures
-from multiprocessing import Process
 
 
 logger = logging.getLogger(__name__)
@@ -71,11 +71,9 @@ def import_zips(impf):
         logger.exception(msg, impf.name, str(e)) 
     else: 
         try:
-            # res = erp_manager.import_wizard(impf.name, content, mutex)
-            res = True
+            res = erp_manager.import_wizard(impf.name, content, mutex)
             if not res:
                 if impf.retries >= MAX_NUM_RETRIES:
-                    # alert_manager.alert_send(missatge="No s'ha pogut pujar el següent fitxer:", llistat=[impf.name])
                     updateState(impf, UpdateStatus.ERROR)
                 else:
                     impf.retries = impf.retries +1
@@ -92,10 +90,6 @@ def summary():
     today = date.today()
     i_date = datetime(today.year, today.month, today.day, 0, 0, 0)
     f_date = i_date + timedelta(days=1)
-
-    # Casos pendents de processar
     events = listEvents()
-    # Casos processats, amb estat
     impfs = listImportFiles_by_date_interval(i_date, f_date)
-
     alert_manager.summary_send(i_date, f_date, events, impfs)

@@ -9,7 +9,6 @@ database:
 
 # Minio conf
 minio:
-  default_bucket: ''
   endpoint: ''
   access_key: ''
   secret_key: ''

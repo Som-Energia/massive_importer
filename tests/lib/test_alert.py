@@ -9,7 +9,7 @@ from pony.orm import db_session, sql_debug, count, select, set_sql_debug
 os.environ.setdefault('MASSIVE_IMPORTER_SETTINGS', 'massive_importer.conf.envs.test')
 
 from massive_importer.models.importer import Event, ImportFile, UpdateStatus, db
-from massive_importer.conf.startup_configuration import settings
+from massive_importer.conf import settings
 
 logger = logging.getLogger(__name__)
 

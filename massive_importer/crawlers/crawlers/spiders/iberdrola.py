@@ -148,7 +148,7 @@ class Iberdrola(scrapy.Spider):
         except IndexError as err:
             logger.error(err)
         finally:
-            yield minio_manager.put_file_content(minio_manager.default_bucket, filename, response.body)
+            yield minio_manager.put_file(minio_manager.default_bucket, filename, response.body)
         
     
 
