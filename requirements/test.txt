@@ -1,2 +1,0 @@
--r base.txt
-pytest>=3.3.2

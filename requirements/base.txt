@@ -1,6 +1,0 @@
-APScheduler==3.5.1
-ERPpeek==1.6.3
-minio==3.0.1
-pony==0.7.3
-psycopg2==2.7.3.2
-PyYAML==3.12
