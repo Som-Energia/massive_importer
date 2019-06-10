@@ -5,7 +5,7 @@ from pony.orm import Database
 
 from massive_importer.conf import configure_logging, settings
 from massive_importer.models.importer import db
-from massive_importer.importer.tasks import import_zips
+from massive_importer.importer.tasks import check_new_events, web_crawling, summary
 
 logger = logging.getLogger('massive_importer.conf')
 
@@ -31,5 +31,9 @@ def build_app():
 
 
 def add_jobs(app):
-    logger.debug("Adding task: %s", import_zips.__name__)
-    app.add_job(import_zips, **settings.TASKS[import_zips.__name__])
+    logger.debug("Adding task: %s", check_new_events.__name__)
+    app.add_job(check_new_events, **settings.TASKS[check_new_events.__name__])
+    logger.debug("Adding task: %s", web_crawling.__name__)
+    app.add_job(web_crawling, **settings.TASKS[web_crawling.__name__])
+    logger.debug("Adding task: %s", summary.__name__)
+    app.add_job(summary, **settings.TASKS[summary.__name__])

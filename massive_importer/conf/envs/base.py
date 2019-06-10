@@ -20,6 +20,12 @@ database_conf = massive_importer_conf['database']
 
 erp_conf = massive_importer_conf['erp']
 
-tasks_conf = massive_importer_conf['tasks']
+mail_conf = massive_importer_conf['mail']
+
+crawlers_conf = []
+for item in massive_importer_conf['crawlers']:
+    if massive_importer_conf['crawlers'][item] == 'True': crawlers_conf.append(item)
+    
+# tasks_conf = massive_importer_conf['tasks']
 
 TMP_DIR = os.path.join(BASE_DIR, 'tmp')

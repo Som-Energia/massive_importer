@@ -1,9 +1,37 @@
 from .base import *
+from datetime import datetime, timedelta
+from apscheduler.executors.pool import ThreadPoolExecutor
 
+CRAWLERS = crawlers_conf
+MINIO = minio_conf
+MAIL = mail_conf
+DATABASE = database_conf
+ERP = erp_conf
+
+EXECUTORS = {
+    'default': ThreadPoolExecutor(max_workers=10)
+}
 
 TASKS = {
-    'import_zips': tasks_conf['import_zips']
+    'web_crawling': {
+        'trigger': 'cron',
+        'hour': 21,
+        'minutes': 0,
+    },
+
+    'check_new_events': {
+        'trigger': 'cron',
+        'hour': 22,
+        'minute': 0,
+    },
+
+    'summary': {
+        'trigger': 'cron',
+        'hour': 23,
+        'minutes': 30,
+    }
 }
+
 
 LOGGING = {
     'version': 1,
@@ -15,20 +43,28 @@ LOGGING = {
         }
     },
     'handlers': {
-        'file': {
-            'level': 'INFO',
-            'class': 'logging.handlers.TimedRotatingFileHandler',
-            'filename': massive_importer_conf.get('log_dir', False) or 'log/masive_importer.log',
-            'when': 'midnight',
-            'backupCount': 7,
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
             'formatter': 'verbose'
         }
     },
     'loggers': {
         'massive_importer': {
-            'handlers': ['file'],
-            'level': 'INFO',
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True
+        },
+        'apscheduler': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True
+        },
+        'pony': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
             'propagate': True
         }
     }
+
 }

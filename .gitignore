@@ -3,3 +3,5 @@
 *.yaml
 *.ipynb*
 .cache
+.vscode
+Pipfile.lock

@@ -1,0 +1,18 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+ipython = "*"
+
+[packages]
+minio = "==3.0.1"
+pony = "==0.7.3"
+psycopg2 = "==2.7.3.2"
+ipython = ">=5.5.0"
+APScheduler = "==3.5.1"
+PyYAML = "==3.12"
+scrapy-splash = "*"
+ERPpeek = "==1.6.3"
+Scrapy = "*"

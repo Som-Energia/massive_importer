@@ -1,42 +1,35 @@
 # -*- coding: utf-8 -*-
+from .base import *
 from datetime import datetime, timedelta
 from apscheduler.executors.pool import ThreadPoolExecutor
 
-from .base import *
-
-
-MINIO = {
-    'endpoint': 'localhost:9000',
-    'access_key': '',
-    'secret_key': '',
-    'secure': True
-}
-
-DATABASE = {
-    'provider': 'postgres',
-    'host': 'localhost',
-    'port': 5432,
-    'database': 'massive_importer_db',
-    'user': 'massive_importer',
-    'password': '1234'
-}
-
-ERP = {
-    'server': '',
-    'db': '',
-    'user': '',
-    'password': ''
-}
+CRAWLERS = crawlers_conf
+MINIO = minio_conf
+MAIL = mail_conf
+DATABASE = database_conf
+ERP = erp_conf
 
 EXECUTORS = {
     'default': ThreadPoolExecutor(max_workers=10)
 }
 
 TASKS = {
-    'import_zips': {
-        'trigger': 'interval',
-        'minutes': 1,
-        'next_run_time': datetime.now() + timedelta(seconds=20)
+    'web_crawling': {
+        'trigger': 'cron',
+        'hour': 21,
+        'minutes': 0,
+    },
+
+    'check_new_events': {
+        'trigger': 'cron',
+        'hour': 22,
+        'minute': 0,
+    },
+
+    'summary': {
+        'trigger': 'cron',
+        'hour': 23,
+        'minutes': 30,
     }
 }
 
