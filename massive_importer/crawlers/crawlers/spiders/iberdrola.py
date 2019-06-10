@@ -1,6 +1,5 @@
 from massive_importer.crawlers import all_creds
 import logging, scrapy, datetime, io, cgi
-from massive_importer.crawlers.crawlers.items import zipItem
 from massive_importer.lib import minio_utils
 from massive_importer.lib.minio_utils import MinioManager
 from massive_importer.conf import settings
