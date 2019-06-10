@@ -4,24 +4,10 @@ from datetime import datetime, timedelta
 from apscheduler.executors.pool import ThreadPoolExecutor
 
 CRAWLERS = crawlers_conf
-
 MINIO = minio_conf
-
-DATABASE = {
-    'provider': database_conf['provider'],
-    'host': database_conf['host'],
-    'port': database_conf['port'],
-    'database': database_conf['database'],
-    'user': database_conf['user'],
-    'password': database_conf['password'],
-}
-
-ERP = {
-    'server': erp_conf['server'],
-    'db': erp_conf['db'],
-    'user': erp_conf['user'],
-    'password': erp_conf['password'],
-}
+MAIL = mail_conf
+DATABASE = database_conf
+ERP = erp_conf
 
 EXECUTORS = {
     'default': ThreadPoolExecutor(max_workers=10)
@@ -47,13 +33,6 @@ TASKS = {
     }
 }
 
-MAIL = {
-    'from_address': mail_conf['from_address'],
-    'to_address': mail_conf['to_address'],
-    'host': mail_conf['host'],
-    'port': mail_conf['port'],
-    'password': mail_conf['password']
-}
 
 LOGGING = {
     'version': 1,
