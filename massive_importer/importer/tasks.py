@@ -24,7 +24,7 @@ MAX_NUM_RETRIES = 3
 def web_crawling():
     logger.debug("Crawl process starting... ")
     wc = WebCrawler().crawl()
-    logger.debug("Process done!")
+    logger.debug("Crawl process done!")
     
 @db_session(optimistic=False) 
 def check_new_events(impfs = None): 

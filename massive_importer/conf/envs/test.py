@@ -4,7 +4,8 @@ from datetime import datetime, timedelta
 
 ERP = erp_conf
 
-CRAWLERS = crawlers_conf
+SCRAPY_CRAWLERS = scrapy_crawlers_conf
+SELENIUM_CRAWLERS = selenium_crawlers_conf
 
 MINIO = {
     'endpoint': 'localhost:9000',

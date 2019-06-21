@@ -8,11 +8,11 @@ logger = logging.getLogger(__name__)
 minio_manager = MinioManager(**settings.MINIO)
 credentials = all_creds['iberdrola']
 
-def instance():
+def run():
     return Iberdrola()
 
 class Iberdrola(scrapy.Spider):
-    name = "iberdrola"
+    name = "Iberdrola"
     
     def start_requests(self):
         urls = [
@@ -143,7 +143,9 @@ class Iberdrola(scrapy.Spider):
             filename = filename.split(';')[1].split('=')[1]
             filename = filename.strip('"\'')
             todayfolder = datetime.datetime.now().strftime("%d-%m-%Y")
-            filename = "%s/%s" % (todayfolder,filename)
+            full_filename = '{}_{}'.format(Iberdrola.name, filename)
+
+            filename = "%s/%s" % (todayfolder,full_filename)
         except IndexError as err:
             logger.error(err)
         finally:

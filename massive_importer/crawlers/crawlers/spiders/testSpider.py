@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 
 minio_manager = MinioManager(**settings.MINIO, default_bucket="zips")
 
-def instance():
+def run():
     return TestSpider()
 
 class TestSpider(scrapy.Spider):

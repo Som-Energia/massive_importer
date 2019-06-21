@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 minio_manager = MinioManager(**settings.MINIO)
 credentials = all_creds['endesa']
 
-def instance():
+def run():
     return Endesa()
 
 class Endesa(scrapy.Spider):

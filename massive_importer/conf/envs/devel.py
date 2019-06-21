@@ -3,7 +3,8 @@ from .base import *
 from datetime import datetime, timedelta
 from apscheduler.executors.pool import ThreadPoolExecutor
 
-CRAWLERS = crawlers_conf
+SCRAPY_CRAWLERS = scrapy_crawlers_conf
+SELENIUM_CRAWLERS = selenium_crawlers_conf
 MINIO = minio_conf
 MAIL = mail_conf
 DATABASE = database_conf
