@@ -4,6 +4,7 @@ from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from massive_importer.lib.minio_utils import MinioManager
 from massive_importer.conf import settings
+from massive_importer.lib.exceptions import FileToBucketException
 
 minio_manager = MinioManager(**settings.MINIO)
 logger = logging.getLogger(__name__)
@@ -20,7 +21,7 @@ class PortalConfig(object):
         profile.set_preference('browser.download.dir', self.targetDirectory)
         profile.set_preference('browser.helperApps.neverAsk.saveToDisk', 'application/zip, application/x-zip-compressed, text/plain, application/download')
 
-        self.driver = webdriver.Firefox(profile, options=options)
+        self.driver = webdriver.Firefox(profile, options=options, log_path='/dev/null')
 
     def file_wait_download(self):
         os.chdir(self.targetDirectory)
@@ -39,12 +40,11 @@ class PortalConfig(object):
         full_path = os.path.join(self.targetDirectory, filename)
         todayfolder = datetime.datetime.now().strftime("%d-%m-%Y")
         filename = "%s/%s" % (todayfolder,newfilename)
-        with open(full_path, 'rb') as content:
-            data = content.read()
-            try:
-                minio_manager.put_file(minio_manager.default_bucket, filename, data)
-            except Exception as e:
-                msg = "Error while uploading file %s to minio bucket: %s"
-                logger.error(msg, newfilename, e)
-            finally:
-                if removeFile: os.remove(full_path)
+        try: 
+            with open(full_path, 'rb') as content:
+                data = content.read()
+                minio_manager.put_file(minio_manager.default_bucket, filename, data)                 
+        except Exception as e:
+            raise FileToBucketException(e)
+        finally:
+            if removeFile: os.remove(full_path)

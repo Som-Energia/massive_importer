@@ -17,15 +17,14 @@ class MinioManager(object):
             secure=secure
         )
 
-    def list_objects(self, bucket):
+    def list_objects(self, bucket, prefix=None):
         try:
-            content = self.minio_client.list_objects(bucket, prefix=None, recursive=False)
+            content = self.minio_client.list_objects(bucket, prefix, recursive=True)
         except ResponseError as e:
             msg = "An error occurred listing congint from bucket: %s. %s"
             logger.error(msg, bucket, e)
         finally:
             return content
-
     def get_file_content(self, bucket, file_name):
         try:
             data = self.minio_client.get_object(bucket, file_name)

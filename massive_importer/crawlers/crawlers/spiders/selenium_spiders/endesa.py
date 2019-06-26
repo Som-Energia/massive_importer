@@ -9,7 +9,7 @@ from massive_importer.lib import minio_utils
 from massive_importer.lib.minio_utils import MinioManager
 from massive_importer.conf import settings
 from massive_importer.crawlers.crawlers.spiders.selenium_spiders import PortalConfig
-from selenium.webdriver.common.keys import Keys
+from massive_importer.lib.exceptions import CrawlingProcessException, FileToBucketException
 
 
 logger = logging.getLogger(__name__)
@@ -19,7 +19,7 @@ def instance():
     return Endesa()
 
 class Endesa(PortalConfig):
-    name='Endesa'
+    name='endesa'
 
     def wait_until_ready(self):
         while self.driver.find_element_by_id("00N2400000ILlcu_ileinner").text == 'En proceso':
@@ -27,49 +27,56 @@ class Endesa(PortalConfig):
             self.driver.refresh()
 
     def start(self):
-        self.driver.get("https://portalede.endesa.es/login")
-        WebDriverWait(self.driver, 30).until(EC.visibility_of_element_located((By.ID, "Login")))
-        userbox = self.driver.find_element_by_id("username")
-        userbox.send_keys(credentials['username'])
-        passbox = self.driver.find_element_by_id("password")
-        passbox.send_keys(credentials['password'])
+        try: 
+            self.driver.get("https://portalede.endesa.es/login")
+            WebDriverWait(self.driver, 30).until(EC.visibility_of_element_located((By.ID, "Login")))
+            userbox = self.driver.find_element_by_id("username")
+            userbox.send_keys(credentials['username'])
+            passbox = self.driver.find_element_by_id("password")
+            passbox.send_keys(credentials['password'])
 
-        loginbt = self.driver.find_element_by_id("Login")
-        loginbt.click()
+            loginbt = self.driver.find_element_by_id("Login")
+            loginbt.click()
 
-        self.driver.get("https://portalede.endesa.es/apex/MessageDownload")
+            self.driver.get("https://portalede.endesa.es/apex/MessageDownloada")
 
-        inici = datetime.date(2019,1,4)
-        final = datetime.date(2019,1,4)
-        
-        self.driver.switch_to_default_content()
-        window_before = self.driver.window_handles[0]
-        self.driver.execute_script("document.getElementById('j_id0:downloadForm:block:j_id34:j_id50:dowloadedFrom').setAttribute('value','{:%Y-%m-%d}')".format(inici))
-        self.driver.execute_script("document.getElementById('j_id0:downloadForm:block:j_id34:j_id53:dowloadedTo').setAttribute('value','{:%Y-%m-%d}')".format(final))
-        self.driver.execute_script("document.getElementById('j_id0:downloadForm:block:j_id34:j_id66:receivingCompany').setAttribute('value','0762')")
+            inici = datetime.date(2019,1,4)
+            final = datetime.date(2019,1,4)
+            
+            self.driver.switch_to_default_content()
+            window_before = self.driver.window_handles[0]
+            self.driver.execute_script("document.getElementById('j_id0:downloadForm:block:j_id34:j_id50:dowloadedFrom').setAttribute('value','{:%Y-%m-%d}')".format(inici))
+            self.driver.execute_script("document.getElementById('j_id0:downloadForm:block:j_id34:j_id53:dowloadedTo').setAttribute('value','{:%Y-%m-%d}')".format(final))
+            self.driver.execute_script("document.getElementById('j_id0:downloadForm:block:j_id34:j_id66:receivingCompany').setAttribute('value','0762')")
 
-        sel = self.driver.find_element_by_id('j_id0:downloadForm:block:j_id34:j_id74:downloaded')
-        for option in sel.find_elements_by_tag_name('option'):
-            if option.text == 'Si':
-                option.click()
-                break
+            sel = self.driver.find_element_by_id('j_id0:downloadForm:block:j_id34:j_id74:downloaded')
+            for option in sel.find_elements_by_tag_name('option'):
+                if option.text == 'Si':
+                    option.click()
+                    break
 
-        self.driver.find_element_by_id("j_id0:downloadForm:block:downloadButtons:bottom:j_id7").click()
-        WebDriverWait(self.driver, 30).until(EC.visibility_of_element_located((By.ID, "j_id0:downloadForm:block:resultsBlock:table:j_id83header:sortDiv")))
-        self.driver.find_element_by_id("j_id0:downloadForm:block:downloadButtons:downloadAll").click()
-        WebDriverWait(self.driver, 30).until(EC.visibility_of_element_located((By.ID, "j_id0:downloadForm:block:j_id8:j_id9:j_id10:0:j_id11:j_id12:j_id15")))
-        
-        self.driver.find_element(By.XPATH, "//a[@target='_blank']").click()
-        time.sleep(5)
-        window_after = self.driver.window_handles[1]
-        
-        self.driver.switch_to_window(window_after)  
-        WebDriverWait(self.driver, 30).until(EC.visibility_of_element_located((By.NAME, "download_messages")))
-        self.wait_until_ready()
-        self.driver.find_element_by_name("download_messages").click()
+            self.driver.find_element_by_id("j_id0:downloadForm:block:downloadButtons:bottom:j_id7").click()
+            WebDriverWait(self.driver, 30).until(EC.visibility_of_element_located((By.ID, "j_id0:downloadForm:block:resultsBlock:table:j_id83header:sortDiv")))
+            self.driver.find_element_by_id("j_id0:downloadForm:block:downloadButtons:downloadAll").click()
+            WebDriverWait(self.driver, 30).until(EC.visibility_of_element_located((By.ID, "j_id0:downloadForm:block:j_id8:j_id9:j_id10:0:j_id11:j_id12:j_id15")))
+            
+            self.driver.find_element(By.XPATH, "//a[@target='_blank']").click()
+            time.sleep(5)
+            window_after = self.driver.window_handles[1]
+            
+            self.driver.switch_to_window(window_after)  
+            WebDriverWait(self.driver, 30).until(EC.visibility_of_element_located((By.NAME, "download_messages")))
+            self.wait_until_ready()
+            self.driver.find_element_by_name("download_messages").click()
+            
+            filename = self.file_wait_download()
 
-        filename = self.file_wait_download()
-        self.driver.close()
-
-        newfilename = '{}_{}'.format(Endesa.name, filename)
-        return self.file_to_minio(filename, newfilename)
+        except Exception as e:
+            raise CrawlingProcessException(e)
+        finally:
+            self.driver.quit()
+        try:
+            newfilename = '{}_{}'.format(Endesa.name, filename)
+            self.file_to_minio(filename, newfilename)
+        except FileToBucketException as e:
+            raise e
