@@ -1,5 +1,6 @@
 from massive_importer.crawlers import all_creds
 import logging, scrapy, datetime, io, cgi
+from scrapy.exceptions import CloseSpider
 from massive_importer.lib import minio_utils
 from massive_importer.lib.minio_utils import MinioManager
 from massive_importer.conf import settings
@@ -12,7 +13,7 @@ def run():
     return Iberdrola()
 
 class Iberdrola(scrapy.Spider):
-    name = "Iberdrola"
+    name = "iberdrola"
     
     def start_requests(self):
         urls = [
@@ -146,7 +147,7 @@ class Iberdrola(scrapy.Spider):
             full_filename = '{}_{}'.format(Iberdrola.name, filename)
 
             filename = "%s/%s" % (todayfolder,full_filename)
-        except IndexError as err:
+        except Exception as err:
             logger.error(err)
         finally:
             yield minio_manager.put_file(minio_manager.default_bucket, filename, response.body)
