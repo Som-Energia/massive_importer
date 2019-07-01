@@ -17,7 +17,6 @@ class Tasks:
     def __init__(self):
         self.minio_manager = MinioManager(**settings.MINIO)
         self.erp_manager = ErpManager(**settings.ERP)
-        self.alert_manager = AlertManager(**settings.MAIL)
         self.date_download_task = None 
         self.date_events_task = None
         self.mutex = threading.Lock()
@@ -94,9 +93,11 @@ class Tasks:
 
     @db_session
     def summary(self):
+        alert_manager = AlertManager(**settings.MAIL)
         today = date.today()
         i_date = datetime(today.year, today.month, today.day, 0, 0, 0)
         f_date = i_date + timedelta(days=1)
         events = listEvents()
         impfs = listImportFiles_by_date_interval(i_date, f_date)
-        self.alert_manager.summary_send(self.date_events_task, i_date, f_date, events, impfs, self.date_download_task, self.downloaded_list)
+        alert_manager.summary_send(self.date_events_task, i_date, f_date, events, impfs, self.date_download_task, self.downloaded_list)
+        alert_manager.close()

@@ -38,7 +38,7 @@ class Endesa(PortalConfig):
             loginbt = self.driver.find_element_by_id("Login")
             loginbt.click()
 
-            self.driver.get("https://portalede.endesa.es/apex/MessageDownloada")
+            self.driver.get("https://portalede.endesa.es/apex/MessageDownload")
 
             inici = datetime.date(2019,1,4)
             final = datetime.date(2019,1,4)
