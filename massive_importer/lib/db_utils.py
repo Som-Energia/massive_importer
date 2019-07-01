@@ -1,6 +1,7 @@
 from massive_importer.models.importer import Event, ImportFile, UpdateStatus
 from pony.orm import select, db_session, delete
 from datetime import datetime
+from massive_importer.lib.exceptions import EventToImportFileException
 
 @db_session
 def listImportFiles():
@@ -24,8 +25,8 @@ def eventToImportFile(event):
     bucketname = event.value['Records'][0]['s3']['bucket']['name']
     try:
         eventsize = event.value['Records'][0]['s3']['object']['size']
-    except:
-        print("Error: Event <<",eventname ,">> reffers to an empty file.")
+    except Exception as e:
+        raise EventToImportFileException(e)
     return ImportFile(etag=eventetag, name=eventname, bucket=bucketname, size=eventsize)
 
 @db_session
