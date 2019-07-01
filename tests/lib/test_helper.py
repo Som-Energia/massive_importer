@@ -5,6 +5,7 @@ from massive_importer.models.importer import Event, ImportFile, db
 from pony.orm import db_session
 from massive_importer.conf import settings
 from massive_importer.lib.db_utils import listEvents, listImportFiles
+DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data/')
 
 
 db.bind(**settings.DATABASE)
@@ -51,3 +52,13 @@ def clean_tables():
         for event in eventList: event.delete()
     if impList:
         for impf in impList: impf.delete()
+
+def get_content():
+    with open(os.path.join(DATA_DIR, 'prova.zip'), 'rb') as f:
+        content = f.read()
+        return content
+
+def get_bad_content():
+    with open(os.path.join(DATA_DIR, 'bad_content.pdf'), 'rb') as f:
+        content = f.read()
+        return content

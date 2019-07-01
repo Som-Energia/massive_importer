@@ -12,6 +12,19 @@ class MassiveImporterException(Exception):
     def __str__(self):
         return self.__repr__()
 
+
+class InvalidEncodingException(MassiveImporterException):
+    
+    def __init__(self, msg):
+        super(InvalidEncodingException, self).__init__(msg)
+        self.msg = msg
+
+    def __repr__(self):
+        return self.msg
+
+    def __str__(self):
+        return self.__repr__()
+
 class EventToImportFileException(MassiveImporterException):
     
     def __init__(self, msg):

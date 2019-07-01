@@ -5,32 +5,37 @@ from erppeek import Client
 os.environ.setdefault('MASSIVE_IMPORTER_SETTINGS', 'massive_importer.conf.envs.test')
 from massive_importer.conf import settings
 from massive_importer.lib.erp_utils import ErpManager
+from massive_importer.lib.exceptions import InvalidEncodingException
 logger = logging.getLogger(__name__)
-DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data/')
-
+from . import test_helper
 
 class TestErpManager(TestCase):
 
     def setUp(self):
-        self.erp_client = Client(**settings.ERP, verbose=False)
+        self.erp_client = ErpManager(**settings.ERP, verbose=False)
 
-    def get_file_b64content(self):
-        logger.error(os.path.join(DATA_DIR, 'prova.zip'))
-        with open(os.path.join(DATA_DIR, 'prova.zip'), 'rb') as f:
-            file_content = f.read()
-        return base64.encodebytes(file_content).decode()
-
+    def test_get_file_b64content(self):
+        try:
+            content = test_helper.get_content()
+            self.erp_client.get_file_b64content(content)
+        except InvalidEncodingException as e:
+            self.fail(e)
+        
+        # bad encoding test
+        content =  'this is a simple string for testing'
+        with self.assertRaises(InvalidEncodingException) as context:
+            self.erp_client.get_file_b64content(content)
+            self.assertTrue('b64 encoded' in context.exception)
+        
     def test_import_wizard(self):
         file_name = 'test_filename'
-        file_content = self.get_file_b64content()
-
-        values = {'file': file_content, 'filename' : file_name}
-        WizardImportAtrF1 = self.erp_client.model('wizard.import.atr.and.f1')
-        import_wizard = WizardImportAtrF1.create(values)
+        file_content = test_helper.get_content()
         
-        context = {'active_ids': [import_wizard.id], 'active_id': import_wizard.id}         
-        res = import_wizard.action_import_xmls(context)
-        self.assertTrue(res)
-        self.assertTrue(import_wizard.state == 'done' or import_wizard.state == 'load' )
+        ret = self.erp_client.import_wizard(file_name, file_content)
+        self.assertTrue(ret)
+
+        bad_file_content = test_helper.get_bad_content()
+        ret2 = self.erp_client.import_wizard(file_name, bad_file_content)
+        self.assertFalse(ret2)
 
 
