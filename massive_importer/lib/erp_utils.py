@@ -45,5 +45,5 @@ class ErpManager(object):
         else: return False
 
 class MockErpManager(object):
-    def import_wizard(self, file_name, file_content):
-        return False
+    def import_wizard(self, file_name, file_contentm , mutex):
+        return True

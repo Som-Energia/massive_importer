@@ -14,9 +14,10 @@ from pony.orm import select, db_session, delete
 logger = logging.getLogger(__name__)
 
 class Tasks:
-    def __init__(self):
+    def __init__(self, erp_manager=None, web_crawler=None):
         self.minio_manager = MinioManager(**settings.MINIO)
-        self.erp_manager = ErpManager(**settings.ERP)
+        self.erp_manager = ErpManager(**settings.ERP) if  erp_manager is None else erp_manager
+        self.wc = WebCrawler() if web_crawler is None else web_crawler
         self.date_download_task = None 
         self.date_events_task = None
         self.mutex = threading.Lock()
@@ -24,12 +25,11 @@ class Tasks:
         self.MAX_NUM_RETRIES = 3
 
     def web_crawling(self):
-        wc = WebCrawler()
         logger.debug("Crawl process starting... ")
-        wc.crawl()
+        self.wc.crawl()
         logger.debug("Crawl process done!")
-        wc.check_downloaded_files()
-        self.downloaded_list = wc.done_list
+        self.wc.check_downloaded_files()
+        self.downloaded_list = self.wc.done_list
         self.date_download_task = datetime.now()
 
     @db_session(optimistic=False) 
