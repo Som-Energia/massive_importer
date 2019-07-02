@@ -25,14 +25,15 @@ class MinioManager(object):
             logger.error(msg, bucket, e)
         finally:
             return content
+            
     def get_file_content(self, bucket, file_name):
+        content = ''
         try:
             data = self.minio_client.get_object(bucket, file_name)
             content = data.read()
         except ResponseError as e:
             msg = "An error occurred getting content of %s from bucket %s: %s"
             logger.error(msg, file_name, bucket, e)
-            content = ''
         finally:
             logger.debug('Longitud: %d', len(content))
             return content
@@ -43,6 +44,7 @@ class MinioManager(object):
         except ResponseError as e:
             msg = "An error occurred on put_file_content of %s from bucket %s: %s"
             logger.error(msg, file_name, bucket, e)
+        else: return True
 
     def full_clean(self, bucket):
         try:

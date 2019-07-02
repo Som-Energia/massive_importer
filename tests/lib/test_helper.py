@@ -5,11 +5,14 @@ from massive_importer.models.importer import Event, ImportFile, db
 from pony.orm import db_session
 from massive_importer.conf import settings
 from massive_importer.lib.db_utils import listEvents, listImportFiles
+from massive_importer.lib.minio_utils import MinioManager
+
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data/')
 
 
 db.bind(**settings.DATABASE)
 db.generate_mapping(create_tables=True)
+minio_manager = MinioManager(**settings.MINIO)
 
 @db_session
 def create_event_list():
@@ -62,3 +65,8 @@ def get_bad_content():
     with open(os.path.join(DATA_DIR, 'bad_content.pdf'), 'rb') as f:
         content = f.read()
         return content
+
+def put_file_in_bucket(filename):
+        file_name = filename
+        data = get_content()
+        ret = minio_manager.put_file(minio_manager.default_bucket, file_name, data)
