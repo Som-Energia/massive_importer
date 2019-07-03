@@ -8,18 +8,16 @@ from massive_importer.models.importer import UpdateStatus, db
 from massive_importer.conf import settings
 from massive_importer.lib import db_utils
 
-from . import test_helper
+from . import testhelper
 logger = logging.getLogger(__name__)
 
 
 class TestDbUtils(TestCase):
     
     @classmethod
-    def setUpClass(cls):  
-        stream_handler = logging.StreamHandler(sys.stdout)
-        logger.addHandler(stream_handler)
-        test_helper.create_event_list()
-        test_helper.create_importfile_list()
+    def setUpClass(cls): 
+        testhelper.create_event_list()
+        testhelper.create_importfile_list()
 
     def test_listImportFiles(self):
         impfs = db_utils.listImportFiles()
@@ -60,5 +58,6 @@ class TestDbUtils(TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        db.drop_all_tables(with_all_data=True)
+        # db.drop_all_tables(with_all_data=True)
+        testhelper.clean_tables()
         db.disconnect()

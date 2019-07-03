@@ -7,7 +7,7 @@ from massive_importer.lib.alert_utils import AlertManager
 from massive_importer.lib.exceptions import TooFewArgumentsException
 os.environ.setdefault('MASSIVE_IMPORTER_SETTINGS', 'massive_importer.conf.envs.test')
 
-from . import test_helper
+from . import testhelper
 logger = logging.getLogger(__name__)
 
 class AlertTest(TestCase):
@@ -25,20 +25,19 @@ class AlertTest(TestCase):
         
     def test_summary_send_full(self):
         #fullfilled summary
-        summary = test_helper.create_summary()
+        summary = testhelper.create_summary()
         self.assertTrue(self.alert_manager.summary_send(**summary))
 
     def test_summary_send_no_dates(self): 
         #summary with no dates -> Error
-        summary = test_helper.create_summary(no_dates=True)
+        summary = testhelper.create_summary(no_dates=True)
         with self.assertRaises(TooFewArgumentsException) as context:
             self.alert_manager.summary_send(**summary)
             self.assertTrue('dates missig' in context.exception)
 
     def tearDown(self):
-        test_helper.clean_tables()
+        testhelper.clean_tables()
     
     @classmethod
     def tearDownClass(cls):
-        db.drop_all_tables(with_all_data=True)
         cls.alert_manager.close()

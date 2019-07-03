@@ -5,7 +5,7 @@ from massive_importer.conf import configure_logging, settings
 import threading, concurrent.futures
 from massive_importer.lib.minio_utils import MinioManager
 from massive_importer.lib.exceptions import CrawlingProcessException, FileToBucketException, ModuleImportingException
-from tests.lib import test_helper
+from tests.lib import testhelper
 logger = logging.getLogger(__name__)
 class WebCrawler:
     def __init__(self):        
@@ -97,7 +97,7 @@ class MockWebCrawler:
 
     def crawl(self):
         file_name='test_file.zip'
-        test_helper.put_file_in_bucket(file_name)
+        testhelper.put_file_in_bucket(file_name)
         
     def check_downloaded_files(self):
         self.done_list['testSpider'] = True 

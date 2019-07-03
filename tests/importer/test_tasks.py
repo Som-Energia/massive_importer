@@ -19,13 +19,13 @@ from multiprocessing import Process
 from massive_importer.importer.tasks import Tasks
 
 logger = logging.getLogger(__name__)
-from tests.lib import test_helper
+from tests.lib import testhelper
 
 
 class TestTasks(TestCase):
     @classmethod
     def setUpClass(cls):
-        test_helper.clean_tables()
+        testhelper.clean_tables()
         cls.tasks = Tasks(erp_manager=MockErpManager(), web_crawler=MockWebCrawler())
 
     def tearDown(self):
@@ -45,7 +45,7 @@ class TestTasks(TestCase):
 
     @db_session
     def test_import_zips(self):
-        test_helper.create_importfile_list()
+        testhelper.create_importfile_list()
         for item in listImportFiles():
             ret = self.tasks.import_zips(item)
             self.assertTrue(ret)
@@ -61,4 +61,4 @@ class TestTasks(TestCase):
         
     @classmethod
     def tearDownClass(cls):
-        test_helper.clean_tables()
+        testhelper.clean_tables()

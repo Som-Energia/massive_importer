@@ -18,7 +18,8 @@ def build_app():
         db.generate_mapping(create_tables=True)
 
         scheduler = BlockingScheduler(
-            executors=settings.EXECUTORS
+            executors=settings.EXECUTORS,
+            timezone="Europe/Madrid"
         )
 
     except Exception as e:

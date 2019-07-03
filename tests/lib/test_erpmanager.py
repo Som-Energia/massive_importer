@@ -7,7 +7,7 @@ from massive_importer.conf import settings
 from massive_importer.lib.erp_utils import ErpManager
 from massive_importer.lib.exceptions import InvalidEncodingException
 logger = logging.getLogger(__name__)
-from . import test_helper
+from . import testhelper
 
 class TestErpManager(TestCase):
 
@@ -16,7 +16,7 @@ class TestErpManager(TestCase):
 
     def test_get_file_b64content(self):
         try:
-            content = test_helper.get_content()
+            content = testhelper.get_content()
             self.erp_client.get_file_b64content(content)
         except InvalidEncodingException as e:
             self.fail(e)
@@ -29,12 +29,12 @@ class TestErpManager(TestCase):
         
     def test_import_wizard(self):
         file_name = 'test_filename.zip'
-        file_content = test_helper.get_content()
+        file_content = testhelper.get_content()
 
         ret = self.erp_client.import_wizard(file_name, file_content)
         self.assertTrue(ret)
 
-        bad_file_content = test_helper.get_bad_content()
+        bad_file_content = testhelper.get_bad_content()
         ret2 = self.erp_client.import_wizard(file_name, bad_file_content)
         self.assertTrue(ret2) # Wizzard accepts any file...
 
