@@ -3,3 +3,7 @@
 *.yaml
 *.ipynb*
 .cache
+.vscode
+*.save
+Pipfile.lock
+Pipfile.save

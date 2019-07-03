@@ -31,6 +31,10 @@ class ImportFile(db.Entity):
 
     id = PrimaryKey(int, auto=True)
 
+    etag = Required(str, unique=True)
+
+    bucket = Required(str)
+
     name = Required(str, index='index_importfile_name')
 
     state = Required(

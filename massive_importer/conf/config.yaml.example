@@ -23,3 +23,23 @@ erp:
 
 log_level: 'INFO'
 log_dir: ''
+
+# Mail conf
+mail: 
+  from_address: ''
+  to_address: ''
+  host: ''
+  port: ''
+  password: ''
+
+# Crawlers conf
+crawlers:
+  endesa: ''
+  iberdrola: ''
+  hc: ''
+  fenosa: ''
+  viesgo: ''
+  aseme: ''
+  cide: ''
+  conquense: ''
+  begasa: ''
