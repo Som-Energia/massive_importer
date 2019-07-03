@@ -9,5 +9,5 @@ install:
   - pip install pipenv
   - pipenv install --dev --three
 script:
-  - pipenv shell -c
+  - pipenv shell
   - pipenv run python -m unittest
