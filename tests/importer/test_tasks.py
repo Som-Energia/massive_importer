@@ -43,9 +43,22 @@ class TestTasks(TestCase):
         self.tasks.check_new_events()
         self.assertIsNotNone(self.tasks.date_events_task)
 
-    #TODO: test_import_zips
-    #TODO: test_summary
+    @db_session
+    def test_import_zips(self):
+        test_helper.create_importfile_list()
+        for item in listImportFiles():
+            ret = self.tasks.import_zips(item)
+            self.assertTrue(ret)
 
+    def test_summary(self):
+        today = date.today()
+        self.tasks.date_events_task = datetime(today.year, today.month, today.day, 0, 0, 0)  
+        self.tasks.date_download_task = datetime(today.year, today.month, today.day, 0, 0, 0) 
+        if not self.tasks.downloaded_list:
+            self.tasks.downloaded_list = {'testSpider'}
+        ret = self.tasks.summary()
+        self.assertTrue(ret)
+        
     @classmethod
     def tearDownClass(cls):
         test_helper.clean_tables()

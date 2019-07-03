@@ -93,11 +93,16 @@ class Tasks:
 
     @db_session
     def summary(self):
-        alert_manager = AlertManager(**settings.MAIL)
-        today = date.today()
-        i_date = datetime(today.year, today.month, today.day, 0, 0, 0)
-        f_date = i_date + timedelta(days=1)
-        events = listEvents()
-        impfs = listImportFiles_by_date_interval(i_date, f_date)
-        alert_manager.summary_send(self.date_events_task, i_date, f_date, events, impfs, self.date_download_task, self.downloaded_list)
-        alert_manager.close()
+        try: 
+            alert_manager = AlertManager(**settings.MAIL)
+            today = date.today()
+            i_date = datetime(today.year, today.month, today.day, 0, 0, 0)
+            f_date = i_date + timedelta(days=1)
+            events = listEvents()
+            impfs = listImportFiles_by_date_interval(i_date, f_date)
+            alert_manager.summary_send(self.date_events_task, i_date, f_date, events, impfs, self.date_download_task, self.downloaded_list)
+            alert_manager.close()
+        except Exception as e:
+            logger.error("Exception raised sending crawl summary: ", e)
+        else:
+            return True
