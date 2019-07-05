@@ -19,17 +19,16 @@ from multiprocessing import Process
 from massive_importer.importer.tasks import Tasks
 
 logger = logging.getLogger(__name__)
-from tests.lib import testhelper
-
-
+from tests.lib.testhelper import TestHelper
+testhelper = TestHelper()
 class TestTasks(TestCase):
     @classmethod
     def setUpClass(cls):
+        cls.downloaded_list = None
+        cls.date_events_task = None
+        cls.date_download_task = None
         testhelper.clean_tables()
         cls.tasks = Tasks(erp_manager=MockErpManager(), web_crawler=MockWebCrawler())
-
-    def tearDown(self):
-        self.tasks.minio_manager.full_clean(self.tasks.minio_manager.default_bucket)
 
     def test_web_crawling(self):
         self.tasks.web_crawling()
@@ -59,6 +58,9 @@ class TestTasks(TestCase):
         ret = self.tasks.summary()
         self.assertTrue(ret)
         
+    def tearDown(self):
+        self.tasks.minio_manager.full_clean(self.tasks.minio_manager.default_bucket)
+   
     @classmethod
     def tearDownClass(cls):
         testhelper.clean_tables()

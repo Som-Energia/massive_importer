@@ -7,13 +7,13 @@ from massive_importer.lib.alert_utils import AlertManager
 from massive_importer.lib.exceptions import TooFewArgumentsException
 os.environ.setdefault('MASSIVE_IMPORTER_SETTINGS', 'massive_importer.conf.envs.test')
 
-from . import testhelper
+from .testhelper import TestHelper
 logger = logging.getLogger(__name__)
-
+testhelper = TestHelper()
 class AlertTest(TestCase):
 
     @classmethod
-    def setUpClass(cls): 
+    def setUpClass(cls):
         cls.alert_manager = AlertManager(**settings.MAIL)
         stream_handler = logging.StreamHandler(sys.stdout)
         logger.addHandler(stream_handler)
@@ -41,3 +41,4 @@ class AlertTest(TestCase):
     @classmethod
     def tearDownClass(cls):
         cls.alert_manager.close()
+        testhelper.disconnect_db()

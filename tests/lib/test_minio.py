@@ -4,8 +4,10 @@ from minio import Minio
 from minio.error import ResponseError
 os.environ.setdefault('MASSIVE_IMPORTER_SETTINGS', 'massive_importer.conf.envs.test')
 from massive_importer.conf import  settings
+
+from .testhelper import TestHelper
+testhelper = TestHelper()
 logger = logging.getLogger(__name__)
-from . import testhelper
 
 class TestMinioManager(TestCase):
 
@@ -33,10 +35,10 @@ class TestMinioManager(TestCase):
         file_name = 'test_file.zip'
         data = testhelper.get_content()
         ret = testhelper.minio_manager.put_file(self.bucket, file_name, data)
-
         content = testhelper.minio_manager.get_file_content(self.bucket, file_name)
         self.assertEqual(content, testhelper.get_content())
         
     @classmethod
     def tearDownClass(self):
         testhelper.minio_manager.full_clean(self.bucket)
+        testhelper.disconnect_db()

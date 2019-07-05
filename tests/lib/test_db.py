@@ -8,7 +8,8 @@ from massive_importer.models.importer import UpdateStatus, db
 from massive_importer.conf import settings
 from massive_importer.lib import db_utils
 
-from . import testhelper
+from .testhelper import TestHelper
+testhelper = TestHelper()
 logger = logging.getLogger(__name__)
 
 
@@ -60,4 +61,4 @@ class TestDbUtils(TestCase):
     def tearDownClass(cls):
         # db.drop_all_tables(with_all_data=True)
         testhelper.clean_tables()
-        db.disconnect()
+        testhelper.disconnect_db()

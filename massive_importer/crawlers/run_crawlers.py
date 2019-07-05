@@ -5,10 +5,11 @@ from massive_importer.conf import configure_logging, settings
 import threading, concurrent.futures
 from massive_importer.lib.minio_utils import MinioManager
 from massive_importer.lib.exceptions import CrawlingProcessException, FileToBucketException, ModuleImportingException
-from tests.lib import testhelper
+from tests.lib.testhelper import TestHelper
 logger = logging.getLogger(__name__)
 class WebCrawler:
     def __init__(self):        
+        self.minio_manager = MinioManager(**settings.MINIO)
         self.scrapy_crawlers = settings.SCRAPY_CRAWLERS
         self.selenium_crawlers = settings.SELENIUM_CRAWLERS
         self.done_list = {}
@@ -79,11 +80,9 @@ class WebCrawler:
             return True
 
     def check_downloaded_files(self):
-        minio_manager = MinioManager(**settings.MINIO)
         todayfolder = datetime.datetime.now().strftime("%d-%m-%Y")
-        minio_manager = MinioManager(**settings.MINIO)
         prefix = "%s/" % (todayfolder)
-        today_files = minio_manager.list_objects(minio_manager.default_bucket, prefix)
+        today_files = self.minio_manager.list_objects(self.minio_manager.default_bucket, prefix)
         name_list = []
         for item in today_files:
             distri = re.search('\/(.*?)\_', item.object_name).group(1)
@@ -94,10 +93,12 @@ class WebCrawler:
 class MockWebCrawler:
     def __init__(self):        
         self.done_list = {}
+        self.minio_manager = MinioManager(**settings.MINIO)
+
 
     def crawl(self):
         file_name='test_file.zip'
-        testhelper.put_file_in_bucket(file_name)
+        TestHelper.put_file_in_bucket(self, file_name)
         
     def check_downloaded_files(self):
         self.done_list['testSpider'] = True 

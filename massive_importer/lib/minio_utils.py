@@ -27,6 +27,7 @@ class MinioManager(object):
             return content
             
     def get_file_content(self, bucket, file_name):
+        
         content = ''
         try:
             data = self.minio_client.get_object(bucket, file_name)

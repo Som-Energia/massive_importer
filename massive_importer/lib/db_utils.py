@@ -1,7 +1,9 @@
 from massive_importer.models.importer import Event, ImportFile, UpdateStatus
 from pony.orm import select, db_session, delete
 from datetime import datetime
+import logging
 from massive_importer.lib.exceptions import EventToImportFileException
+logger = logging.getLogger(__name__)
 
 @db_session
 def listImportFiles():
@@ -19,16 +21,32 @@ def listEvents():
     return list(ret)
 
 @db_session
-def eventToImportFile(event):    
+def eventToImportFile(event):
+    impf = None
     eventname = event.value['Records'][0]['s3']['object']['key']
     eventetag = event.value['Records'][0]['s3']['object']['eTag']
     bucketname = event.value['Records'][0]['s3']['bucket']['name']
+    eventsize = event.value['Records'][0]['s3']['object']['size']
     try:
-        eventsize = event.value['Records'][0]['s3']['object']['size']
+        impf = ImportFile(etag=eventetag, name=eventname, bucket=bucketname, size=eventsize)
+        return impf
     except Exception as e:
         raise EventToImportFileException(e)
-    return ImportFile(etag=eventetag, name=eventname, bucket=bucketname, size=eventsize)
+    else:    
+        return impf
 
 @db_session
 def updateState(impf, state):
     impf.set(state=state, modified_at=datetime.now())
+
+@db_session
+def checkEtag(event):
+    eventetag = event.value['Records'][0]['s3']['object']['eTag']
+    impf = ImportFile.get(etag=eventetag)
+    return True if impf else False
+
+@db_session
+def delete_events(eventList):
+    if eventList:          
+        for event in eventList:
+            event.delete()

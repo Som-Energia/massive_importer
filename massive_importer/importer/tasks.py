@@ -7,7 +7,7 @@ from massive_importer.crawlers.run_crawlers import WebCrawler
 from massive_importer.lib.minio_utils import MinioManager
 from massive_importer.lib.alert_utils import AlertManager
 from massive_importer.lib.erp_utils import ErpManager
-from massive_importer.lib.db_utils import listEvents, listImportFiles, listImportFiles_by_date_interval, updateState, eventToImportFile
+from massive_importer.lib.db_utils import delete_events, checkEtag, listEvents, listImportFiles, listImportFiles_by_date_interval, updateState, eventToImportFile
 from massive_importer.conf import configure_logging, settings
 from massive_importer.models.importer import Event, ImportFile, UpdateStatus
 from pony.orm import select, db_session, delete
@@ -37,16 +37,18 @@ class Tasks:
         if self.erp_manager == None : 
             raise ValueError("There is no ERP Connection")
         logger.debug("Import zips process stating...")
+        eventList = []
         if impfs is None:
             impfs = []
             eventList = listEvents() 
             if eventList:          
-                for event in eventList: 
-                    impf = eventToImportFile(event) 
+                for event in eventList:
+                    impf = None if checkEtag(event) else eventToImportFile(event)
                     if impf: 
                         impfs.append(impf) 
                         logger.debug('Afegit l\'ImportFile %s a la llista!' % urllib.parse.unquote(impf.name)) 
-                        event.delete()
+                    else:
+                        logger.error('L\'arxiu %s ja ha estat importat, es descarta!' % event)
             else: logger.debug("No Events pending")
 
         if impfs:                  
@@ -54,7 +56,7 @@ class Tasks:
                 future_to_events = {executor.submit(self.import_zips, impf): impf for impf in impfs}     
                 for future in concurrent.futures.as_completed(future_to_events): 
                     event = future_to_events[future] 
-                    try: 
+                    try:
                         res = future.result() 
                     except Exception as e:
                         msg = "%r generated an exception: %s"
@@ -63,13 +65,14 @@ class Tasks:
                         logger.debug('%s generated with result: %r' % (event.name, res))
         else: logger.debug("No ImportFiles pending")
         logger.debug("Process done!")
+        delete_events(eventList)
         self.date_events_task = datetime.now()
 
     @db_session
     def import_zips(self, impf):
         updateState(impf, UpdateStatus.IN_PROCESS) 
         content = None 
-        try: 
+        try:
             content = self.minio_manager.get_file_content(impf.bucket, urllib.parse.unquote(impf.name)) 
         except Exception as e: 
             updateState(impf, UpdateStatus.ERROR) 
