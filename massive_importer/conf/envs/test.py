@@ -9,8 +9,8 @@ SELENIUM_CRAWLERS = selenium_crawlers_conf
 
 MINIO = {
     'endpoint': 'localhost:9000',
-    'access_key': '',
-    'secret_key': '',
+    'access_key': 'NJHXYRAAILTKUVSXWDP9',
+    'secret_key': 'IqoH+bHYxkfE8xvmLpMdaxjLGJkmhria3Qxi9Q73',
     'secure': False
 }
 
@@ -18,8 +18,8 @@ DATABASE = {
     'provider': 'postgres',
     'host': 'localhost',
     'port': 5432,
-    'database': '',
-    'user': '',
+    'database': 'bucketevents_db',
+    'user': 'postgres',
     'password': ''
 }
 
@@ -38,20 +38,19 @@ EXECUTORS = {
 TASKS = {
     'check_new_events': {
         'trigger': 'interval',
-        'minutes': 100,
-        'next_run_time': datetime.now() + timedelta(seconds=100000)
+        'minutes': 1,
+        'next_run_time': datetime.now() + timedelta(seconds=5)
     },
-
     'web_crawling': {
         'trigger': 'interval',
-        'minutes': 100,
-        'next_run_time': datetime.now() + timedelta(seconds=5)
+        'minutes': 1000000000,
+        'next_run_time': datetime.now() + timedelta(seconds=10000000000)
     },
 
     'summary': {
         'trigger': 'interval',
-        'minutes': 100,
-        'next_run_time': datetime.now() + timedelta(seconds=100000)
+        'minutes': 3,
+        'next_run_time': datetime.now() + timedelta(seconds=60)
     }
 }
 
