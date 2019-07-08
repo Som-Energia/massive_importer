@@ -35,6 +35,7 @@ mail:
 # Crawlers conf
 crawlers:
   endesa: ''
+  endesa_r: ''
   iberdrola: ''
   hc: ''
   fenosa: ''
