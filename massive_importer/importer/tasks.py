@@ -46,7 +46,7 @@ class Tasks:
                     impf = None if checkEtag(event) else eventToImportFile(event)
                     if impf: 
                         impfs.append(impf) 
-                        logger.debug('Afegit l\'ImportFile %s a la llista!' % urllib.parse.unquote(impf.name)) 
+                        logger.debug('Afegit l\'ImportFile %s a la llista!' % urllib.parse.unquote_plus(impf.name)) 
                     else:
                         logger.error('L\'arxiu %s ja ha estat importat, es descarta!' % event)
             else: logger.debug("No Events pending")
@@ -73,14 +73,14 @@ class Tasks:
         updateState(impf, UpdateStatus.IN_PROCESS) 
         content = None 
         try:
-            content = self.minio_manager.get_file_content(impf.bucket, urllib.parse.unquote(impf.name)) 
+            content = self.minio_manager.get_file_content(impf.bucket, urllib.parse.unquote_plus(impf.name)) 
         except Exception as e: 
             updateState(impf, UpdateStatus.ERROR) 
             msg = "Error getting file content from Minio bucket, generated an exception: %s" 
             logger.exception(msg, impf.name, str(e)) 
         else: 
             try:
-                res = self.erp_manager.import_wizard(impf.name, content, self.mutex)
+                res = self.erp_manager.import_wizard(urllib.parse.unquote_plus(impf.name), content, self.mutex)
                 if not res:
                     if impf.retries >= self.MAX_NUM_RETRIES:
                         updateState(impf, UpdateStatus.ERROR)

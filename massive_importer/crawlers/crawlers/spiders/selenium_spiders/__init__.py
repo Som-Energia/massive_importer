@@ -12,15 +12,14 @@ logger = logging.getLogger(__name__)
 class PortalConfig(object):
     def __init__(self) :
         options = Options()
-        options.add_argument('--headless')
+        # options.add_argument('--headless')
 
         self.targetDirectory = os.path.join(os.path.dirname(os.path.abspath(__file__)),'tmp/')
         profile = webdriver.FirefoxProfile()
         profile.set_preference('browser.download.folderList', 2)
         profile.set_preference('browser.download.manager.showWhenStarting', False)
         profile.set_preference('browser.download.dir', self.targetDirectory)
-        profile.set_preference('browser.helperApps.neverAsk.saveToDisk', 'application/zip, application/x-zip-compressed, text/plain, application/download')
-
+        profile.set_preference('browser.helperApps.neverAsk.saveToDisk', 'application/zip, application/octet-stream, application/x-zip-compressed, multipart/x-zip, application/x-rar-compressed, application/octet-stream')
         self.driver = webdriver.Firefox(profile, options=options, log_path='/dev/null')
 
     def file_wait_download(self):
