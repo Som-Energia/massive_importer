@@ -32,17 +32,17 @@ class PortalConfig(object):
             time.sleep(5)
         filename = max([f for f in os.listdir(self.targetDirectory)], key=os.path.getctime)
         return filename
-    
+
     def file_to_minio(self, filename, newfilename=None, removeFile=True):
         if newfilename == None:
             newfilename = filename
         full_path = os.path.join(self.targetDirectory, filename)
         todayfolder = datetime.datetime.now().strftime("%d-%m-%Y")
         filename = "%s/%s" % (todayfolder,newfilename)
-        try: 
+        try:
             with open(full_path, 'rb') as content:
                 data = content.read()
-                minio_manager.put_file(minio_manager.default_bucket, filename, data)                 
+                minio_manager.put_file(minio_manager.default_bucket, filename, data)
         except Exception as e:
             raise FileToBucketException(e)
         finally:

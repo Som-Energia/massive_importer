@@ -32,7 +32,7 @@ def eventToImportFile(event):
         return impf
     except Exception as e:
         raise EventToImportFileException(e)
-    else:    
+    else:
         return impf
 
 @db_session
@@ -47,6 +47,6 @@ def checkEtag(event):
 
 @db_session
 def delete_events(eventList):
-    if eventList:          
+    if eventList:
         for event in eventList:
             event.delete()

@@ -12,7 +12,7 @@ def run():
 
 class TestSpider(scrapy.Spider):
     name = "testSpider"
-    
+
     def start_requests(self):
         yield scrapy.Request(url="https://www.example.com", callback=self.download)
 
@@ -24,4 +24,3 @@ class TestSpider(scrapy.Spider):
         with open(path, 'rb') as content:
             data = content.read()
             minio_manager.put_file(minio_manager.default_bucket, filename, data)
-        

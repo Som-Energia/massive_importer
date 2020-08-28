@@ -25,7 +25,7 @@ log_level: 'INFO'
 log_dir: ''
 
 # Mail conf
-mail: 
+mail:
   from_address: ''
   to_address: ''
   host: ''

@@ -5,15 +5,15 @@ env:
   global:
     - PIPENV_VENV_IN_PROJECT=1
     - PIPENV_IGNORE_VIRTUALENVS=1
-services: 
+services:
   - docker
   - postgresql
 before_install:
-  - docker pull minio/minio 
+  - docker pull minio/minio
   - docker run minio/minio -p localhost:9000:9000 --name minio -e 'MINIO_ACCESS_KEY=NJHXYRAAILTKUVSXWDP9' -e 'MINIO_SECRET_KEY=IqoH+bHYxkfE8xvmLpMdaxjLGJkmhria3Qxi9Q73' -v /mnt/data:/data -v /mnt/config:/root/.minio minio/minio server /data
   - docker pull minio/mc
   - docket run minio/mc /bin/sh -c "mc config host add minio http://localhost NJHXYRAAILTKUVSXWDP9 IqoH+bHYxkfE8xvmLpMdaxjLGJkmhria3Qxi9Q73 & mc mb minio/zips & mc event add minio/zips arn:minio:sqs::1:postgresql --suffix .zip & mc policy minio/zips public & mc admin config set minio < minio.json"
-  
+
 install:
   - pip install pipenv
   - pipenv install --dev --three

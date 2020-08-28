@@ -14,7 +14,7 @@ def run():
 
 class Iberdrola(scrapy.Spider):
     name = "iberdrola"
-    
+
     def start_requests(self):
         urls = [
             'https://www.iberdrola.es/pwmultid/ServletAutentificacion?pwmultid=iberdrolad',
@@ -60,7 +60,7 @@ class Iberdrola(scrapy.Spider):
             'cod_destino': response.xpath("//select[@name='cod_emisora']/option[contains(text(), 'SOM ENERGIA')]/@value").get(),
             'des_emisora': response.xpath("//input[@name='des_emisora']/@value").get(),
             'cod_grupo_emp_emisora': response.xpath("//input[@name='cod_grupo_emp_emisora']/@value").get(),
-            'cod_grupo_emp_destino': response.xpath("//input[@name='cod_grupo_emp_destino']/@value").get(),        
+            'cod_grupo_emp_destino': response.xpath("//input[@name='cod_grupo_emp_destino']/@value").get(),
             'grupo_proceso': response.xpath("//select[@name='grupo_proceso']/option[@selected]/@value").get(),
             'cod_proceso': response.xpath("//select[@name='cod_proceso']/option[@selected]/@value").get(),
             'cod_paso': response.xpath("//select[@name='cod_paso']/option[@selected]/@value").get(),
@@ -80,23 +80,23 @@ class Iberdrola(scrapy.Spider):
             'des_grupo_emp_emisora': response.xpath("//input[@name='des_grupo_emp_emisora']/@value").get(),
             'des_grupo_emp_destino': response.xpath("//input[@name='des_grupo_emp_destino']/@value").get(),
             'lista_cups': response.xpath("//input[@name='lista_cups']/@value").get(),
-        }                                                                                                                                                                                                                                                                                                                                                                                         
+        }
         data = { **base_form , 'mensajes_firmados': "null"}
 
-        yield scrapy.FormRequest(url='https://www.iberdrola.es/pwelconq/ServletConsultaMensajesDatos', 
-                                 formdata=ServletConsultaMensajesDatos, 
-                                 callback=self.step2, 
+        yield scrapy.FormRequest(url='https://www.iberdrola.es/pwelconq/ServletConsultaMensajesDatos',
+                                 formdata=ServletConsultaMensajesDatos,
+                                 callback=self.step2,
                                  meta={'base_form': base_form})
 
     def step2(self, response):
-        yield scrapy.FormRequest(url='https://www.iberdrola.es/pwelconq/ServletConsultaMensajes', 
-                                 formdata=response.meta.get('base_form'), 
-                                 callback=self.step3, 
+        yield scrapy.FormRequest(url='https://www.iberdrola.es/pwelconq/ServletConsultaMensajes',
+                                 formdata=response.meta.get('base_form'),
+                                 callback=self.step3,
                                  meta={'base_form': response.meta.get('base_form')})
 
     def step3(self, response):
         pendents = int(response.xpath("//input[@name='numero']/@value").get())
-            
+
         if pendents >= 1000 :
             logging.debug("Hi ha més del 1000 casos pendents!")
         elif not pendents:
@@ -120,7 +120,7 @@ class Iberdrola(scrapy.Spider):
                 'numero':response.xpath("//input[@name='numero']/@value").get(),
                 'detalleTransferencia':response.xpath("//input[@name='detalleTransferencia']/@value").get(),
             }
-            
+
             for i in range (0, pendents):
                 cabecera = "cabecera"+str(i)
                 ServletListaMensajes[cabecera] = response.xpath("//input[@name='"+cabecera+"']/@value").get()
@@ -130,12 +130,12 @@ class Iberdrola(scrapy.Spider):
                 temp = [key,value]
                 dictlist.append(temp)
 
-            for i in range (0, pendents): dictlist.append(['check', str(i)])      
-        
-            yield scrapy.FormRequest(url='https://www.iberdrola.es/pwelconq/ServletListaMensajes', 
+            for i in range (0, pendents): dictlist.append(['check', str(i)])
+
+            yield scrapy.FormRequest(url='https://www.iberdrola.es/pwelconq/ServletListaMensajes',
                                      formdata=dictlist,
                                      callback=self.step4,)
-    
+
 
     def step4(self, response):
         # logger.debug("************* Descarrega del fitxer zip ************" )
@@ -151,11 +151,11 @@ class Iberdrola(scrapy.Spider):
             logger.error(err)
         finally:
             yield minio_manager.put_file(minio_manager.default_bucket, filename, response.body)
-        
-    
 
 
 
-    
+
+
+
 
 

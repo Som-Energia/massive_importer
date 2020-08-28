@@ -27,7 +27,7 @@ class Endesa(PortalConfig):
             self.driver.refresh()
 
     def start(self):
-        try: 
+        try:
             self.driver.get("https://portalede.endesa.es/login")
             WebDriverWait(self.driver, 30).until(EC.visibility_of_element_located((By.ID, "Login")))
             userbox = self.driver.find_element_by_id("username")
@@ -42,7 +42,7 @@ class Endesa(PortalConfig):
 
             inici = datetime.date(2019,1,4)
             final = datetime.date(2019,1,4)
-            
+
             self.driver.switch_to_default_content()
             window_before = self.driver.window_handles[0]
             self.driver.execute_script("document.getElementById('j_id0:downloadForm:block:j_id34:j_id50:dowloadedFrom').setAttribute('value','{:%Y-%m-%d}')".format(inici))
@@ -59,16 +59,16 @@ class Endesa(PortalConfig):
             WebDriverWait(self.driver, 30).until(EC.visibility_of_element_located((By.ID, "j_id0:downloadForm:block:resultsBlock:table:j_id83header:sortDiv")))
             self.driver.find_element_by_id("j_id0:downloadForm:block:downloadButtons:downloadAll").click()
             WebDriverWait(self.driver, 30).until(EC.visibility_of_element_located((By.ID, "j_id0:downloadForm:block:j_id8:j_id9:j_id10:0:j_id11:j_id12:j_id15")))
-            
+
             self.driver.find_element(By.XPATH, "//a[@target='_blank']").click()
             time.sleep(5)
             window_after = self.driver.window_handles[1]
-            
-            self.driver.switch_to_window(window_after)  
+
+            self.driver.switch_to_window(window_after)
             WebDriverWait(self.driver, 30).until(EC.visibility_of_element_located((By.NAME, "download_messages")))
             self.wait_until_ready()
             self.driver.find_element_by_name("download_messages").click()
-            
+
             filename = self.file_wait_download()
 
         except Exception as e:

@@ -28,7 +28,7 @@ class Fenosa(PortalConfig):
             userbox.send_keys(credentials['username'])
             passbox = self.driver.find_element_by_name("cdaPassword")
             passbox.send_keys(credentials['password'])
-            
+
             loginbt = self.driver.find_element_by_id("bton")
             loginbt.click()
 
@@ -54,7 +54,7 @@ class Fenosa(PortalConfig):
             self.driver.execute_script("descargarGlobal();")
 
             filename = self.file_wait_download()
-           
+
         except Exception as e:
             raise CrawlingProcessException(e)
         finally:

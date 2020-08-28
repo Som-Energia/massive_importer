@@ -15,7 +15,7 @@ class AlertManager(object):
         self.to_addr = to_address
         self.passwd = password
         self.server = smtplib.SMTP(host, port)
-        try: 
+        try:
             connectionResponse = self.server.connect(host, port)
             self.server.ehlo()
             self.server.starttls()
@@ -24,7 +24,7 @@ class AlertManager(object):
         except Exception as e:
             msg= "Error connecting to email server: %s"
             logger.error(msg, e)
-                
+
     def alert_send(self, missatge, llistat):
         try:
             subject = 'Massive importer - Import Alert!'
@@ -33,7 +33,7 @@ class AlertManager(object):
             msg.add_header('from', self.from_addr)
             msg.add_header('to', self.to_addr)
             msg.add_header('subject', subject)
-            msg.set_payload(body)   
+            msg.set_payload(body)
             sendResponse = self.server.send_message(msg, from_addr=self.from_addr, to_addrs=[self.to_addr])
             return True
         except Exception as e:
@@ -43,9 +43,9 @@ class AlertManager(object):
         def green_red_ok(state):
             if state == True: state = 'ok'
             if state == False: state = 'error'
-            if(state=='ok'): 
+            if(state=='ok'):
                 return "<font color='#00ff00'>"+ state +"</font>"
-            else: 
+            else:
                 return "<font color='#FF0000'>"+ state +"</font>"
         def last_date(date):
             if date is None:
@@ -65,13 +65,13 @@ class AlertManager(object):
             if(events):
                 _events = "Casos pendents d'importar: <br>" + ("<br>".join(events)) +"<br>"
             if(importfiles):
-                _impfs =  "Casos importats amb Estat: <br>" + ("<br>".join(importfiles)) +"<br>" 
+                _impfs =  "Casos importats amb Estat: <br>" + ("<br>".join(importfiles)) +"<br>"
             if(downloaded_list):
                 _dwnld = "Portals descarregats amb Estat: <br>" + ("<br>".join(downloaded)) +"<br>"
 
             download = ("PROCÉS DE DESCARREGA:" +"<br>"+
                         "Darrera execució: " + last_date(date_download_task) +"<br>"
-                        "Casos descarregats: TOTS" + "<br>") 
+                        "Casos descarregats: TOTS" + "<br>")
             event_task = ("PROCÉS D'IMPORTACIÓ AL ERP:" + "<br>" +
                     "Darrera execució: " + last_date(date_events_task) + "<br>"
                     "Resum importacio amb l'interval " + i_date.strftime("%Y-%m-%d %H:%M:%S") + " fins el "+ f_date.strftime("%Y-%m-%d %H:%M:%S"))

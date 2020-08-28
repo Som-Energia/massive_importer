@@ -27,7 +27,7 @@ selenium_crawlers_conf = []
 for item in massive_importer_conf['crawlers']:
     if massive_importer_conf['crawlers'][item] == 'Scrapy': scrapy_crawlers_conf.append(item)
     if massive_importer_conf['crawlers'][item] == 'Selenium': selenium_crawlers_conf.append(item)
-    
+
 # tasks_conf = massive_importer_conf['tasks']
 
 TMP_DIR = os.path.join(BASE_DIR, 'tmp')

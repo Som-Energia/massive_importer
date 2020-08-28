@@ -7,7 +7,7 @@ from massive_importer.lib.exceptions import InvalidEncodingException
 logger = logging.getLogger(__name__)
 
 class ErpManager(object):
-    def __init__(self, server, db, user, password, verbose=False):     
+    def __init__(self, server, db, user, password, verbose=False):
         self.erp_client = Client(
             server=server,
             db=db,
@@ -15,7 +15,7 @@ class ErpManager(object):
             password=password,
             verbose=verbose
         )
-    
+
     def get_file_b64content(self, content):
         try:
             return base64.encodebytes(content).decode()
@@ -29,8 +29,8 @@ class ErpManager(object):
                 mutex.acquire()
             WizardImportAtrF1 = self.erp_client.model('wizard.import.atr.and.f1')
             import_wizard = WizardImportAtrF1.create(values)
-            context = {'active_ids': [import_wizard.id], 'active_id': import_wizard.id}         
-            try:  
+            context = {'active_ids': [import_wizard.id], 'active_id': import_wizard.id}
+            try:
                 res = import_wizard.action_import_xmls(context)
                 return (import_wizard.state == 'done' or import_wizard.state == 'load')
             except Exception as e:
@@ -40,7 +40,7 @@ class ErpManager(object):
             else:
                 result = True
             finally:
-                if mutex is not None:    
+                if mutex is not None:
                     mutex.release()
         else: return False
 

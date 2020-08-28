@@ -8,7 +8,7 @@ from massive_importer.lib.exceptions import CrawlingProcessException, FileToBuck
 from tests.lib.testhelper import TestHelper
 logger = logging.getLogger(__name__)
 class WebCrawler:
-    def __init__(self):        
+    def __init__(self):
         self.minio_manager = MinioManager(**settings.MINIO)
         self.scrapy_crawlers = settings.SCRAPY_CRAWLERS
         self.selenium_crawlers = settings.SELENIUM_CRAWLERS
@@ -27,7 +27,7 @@ class WebCrawler:
         self.selenium_spiders_path = os.path.join(path,"crawlers/spiders/selenium_spiders/")
 
         for spider in self.scrapy_crawlers:
-            try: 
+            try:
                 spec = importlib.util.spec_from_file_location(spider, "".join([self.scrapy_spiders_path,spider,'.py']))
                 spider_module = importlib.util.module_from_spec(spec)
                 spec.loader.exec_module(spider_module)
@@ -44,17 +44,17 @@ class WebCrawler:
             logger.debug("Any Scrapy Spider to crawl. ")
 
         if self.selenium_crawlers:
-            with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor: 
-                crawl_list = {executor.submit(self.inicia, crawler): crawler for crawler in self.selenium_crawlers}     
-                for future in concurrent.futures.as_completed(crawl_list): 
-                    crwl = crawl_list[future] 
-                    try: 
+            with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+                crawl_list = {executor.submit(self.inicia, crawler): crawler for crawler in self.selenium_crawlers}
+                for future in concurrent.futures.as_completed(crawl_list):
+                    crwl = crawl_list[future]
+                    try:
                         res = future.result()
                     except Exception as e:
                         msg = "%r generated an exception: %s"
-                        logger.exception(msg, crwl, e) 
-                    else: 
-                        logger.debug('%s process done successfully with result: %r' % (crwl, res)) 
+                        logger.exception(msg, crwl, e)
+                    else:
+                        logger.debug('%s process done successfully with result: %r' % (crwl, res))
         else:
             logger.debug("Any Selenium Spider to crawl. ")
 
@@ -65,7 +65,7 @@ class WebCrawler:
             spec.loader.exec_module(spider_module)
             logger.debug("Loaded %s module" % (spider))
             logger.debug("Starting %s crawling..." % (spider))
-            spider_module.instance().start() 
+            spider_module.instance().start()
         except CrawlingProcessException as e:
             logger.error("***Error in Crawling process***: {}".format(spider))
             return False
@@ -87,11 +87,11 @@ class WebCrawler:
         for item in today_files:
             distri = re.search('\/(.*?)\_', item.object_name).group(1)
             name_list.append(distri)
-        for item in self.done_list: 
+        for item in self.done_list:
             self.done_list[item] = item in name_list
 
 class MockWebCrawler:
-    def __init__(self):        
+    def __init__(self):
         self.done_list = {}
         self.minio_manager = MinioManager(**settings.MINIO)
 
@@ -99,6 +99,6 @@ class MockWebCrawler:
     def crawl(self):
         file_name='test_file.zip'
         TestHelper.put_file_in_bucket(self, file_name)
-        
+
     def check_downloaded_files(self):
-        self.done_list['testSpider'] = True 
+        self.done_list['testSpider'] = True
