@@ -60,3 +60,27 @@ class ImportFile(db.Entity):
         index='index_importfile_modified_at',
         default=datetime.now
     )
+
+
+class CrawlingProcessError(db.Entity):
+    _table_ = 'crawling_process_error'
+
+    id = PrimaryKey(int, auto=True)
+
+    crawler_name = Required(str)
+
+    exception_type = Optional(str)
+
+    description = Optional(str)
+
+    created_at = Required(
+        datetime,
+        index='index_crawlingprocess_created_at',
+        sql_default='CURRENT_TIMESTAMP'
+    )
+
+    modified_at = Required(
+        datetime,
+        index='index_crawlingprocess_modified_at',
+        default=datetime.now
+    )

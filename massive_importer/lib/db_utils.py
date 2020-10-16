@@ -1,8 +1,9 @@
-from massive_importer.models.importer import Event, ImportFile, UpdateStatus
+from massive_importer.models.importer import Event, ImportFile, UpdateStatus, CrawlingProcessError
 from pony.orm import select, db_session, delete
 from datetime import datetime
 import logging
 from massive_importer.lib.exceptions import EventToImportFileException
+
 logger = logging.getLogger(__name__)
 
 @db_session
@@ -50,3 +51,11 @@ def delete_events(eventList):
     if eventList:
         for event in eventList:
             event.delete()
+
+@db_session
+def insert_crawling_process_error(crawler_name, e):
+    CrawlingProcessError(
+        crawler_name=crawler_name,
+        exception_type=str(e.__class__),
+        description=str(e)
+    )

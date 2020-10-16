@@ -2,6 +2,7 @@ from twisted.internet import reactor
 import scrapy, logging, os, sys, importlib, datetime, re
 from scrapy.crawler import CrawlerRunner, CrawlerProcess
 from massive_importer.conf import configure_logging, settings
+from massive_importer.lib.db_utils import insert_crawling_process_error
 import threading, concurrent.futures
 from massive_importer.lib.minio_utils import MinioManager
 from massive_importer.lib.exceptions import CrawlingProcessException, FileToBucketException, ModuleImportingException
@@ -57,8 +58,9 @@ class WebCrawler:
                     except Exception as e:
                         msg = "%r generated an exception: %s"
                         logger.exception(msg, crwl, e)
+                        insert_crawling_process_error(crwl, e)
                     else:
-                        logger.debug('%s process done successfully with result: %r' % (crwl, res))
+                        logger.debug('%s process done successfully!' % (crwl))
         else:
             logger.debug("No Selenium Spider to crawl. ")
 
@@ -74,16 +76,13 @@ class WebCrawler:
         except CrawlingProcessException as e:
             logger.error("***Error in Crawling process***: {}".format(spider))
             logger.error(str(e))
-            return False
+            raise e
         except FileToBucketException as e:
             logger.error("***Error uploading crawled file to Minio*** on {} process.".format(spider))
-            return False
+            raise e
         except Exception as e:
             logger.error("Can't import %s module" % (spider))
             raise ModuleImportingException(e)
-            return False
-        else:
-            return True
 
     def check_downloaded_files(self):
         todayfolder = datetime.datetime.now().strftime("%d-%m-%Y")
