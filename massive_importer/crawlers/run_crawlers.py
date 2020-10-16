@@ -45,7 +45,7 @@ class WebCrawler:
             d.addBoth(lambda _: reactor.stop())
             reactor.run(installSignalHandlers=False) # to run in the non-main thread
         else:
-            logger.debug("Any Scrapy Spider to crawl. ")
+            logger.debug("No Scrapy Spider to crawl. ")
 
         if self.selenium_crawlers:
             with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
@@ -60,7 +60,7 @@ class WebCrawler:
                     else:
                         logger.debug('%s process done successfully with result: %r' % (crwl, res))
         else:
-            logger.debug("Any Selenium Spider to crawl. ")
+            logger.debug("No Selenium Spider to crawl. ")
 
     def inicia(self, spider):
         try:
@@ -69,9 +69,11 @@ class WebCrawler:
             spec.loader.exec_module(spider_module)
             logger.debug("Loaded %s module" % (spider))
             logger.debug("Starting %s crawling..." % (spider))
-            spider_module.instance().start()
+            spider_instance = spider_module.instance()
+            spider_instance.start()
         except CrawlingProcessException as e:
             logger.error("***Error in Crawling process***: {}".format(spider))
+            logger.error(str(e))
             return False
         except FileToBucketException as e:
             logger.error("***Error uploading crawled file to Minio*** on {} process.".format(spider))

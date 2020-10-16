@@ -1,6 +1,7 @@
 
 # Database conf
 database:
+  provider: ''
   host: ''
   port: ''
   database: ''

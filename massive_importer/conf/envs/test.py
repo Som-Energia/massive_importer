@@ -2,18 +2,12 @@ from .base import *
 from apscheduler.executors.pool import ThreadPoolExecutor
 from datetime import datetime, timedelta
 
-ERP = erp_conf
-
 SCRAPY_CRAWLERS = scrapy_crawlers_conf
 SELENIUM_CRAWLERS = selenium_crawlers_conf
-
-MAIL = {
-    'from_address': mail_conf['from_address'],
-    'to_address': mail_conf['to_address'],
-    'host': mail_conf['host'],
-    'port': mail_conf['port'],
-    'password': mail_conf['password']
-}
+MINIO = minio_conf
+MAIL = mail_conf
+DATABASE = database_conf
+ERP = erp_conf
 
 EXECUTORS = {
     'default': ThreadPoolExecutor(max_workers=10)
@@ -23,18 +17,17 @@ TASKS = {
     'check_new_events': {
         'trigger': 'interval',
         'minutes': 1,
-        'next_run_time': datetime.now() + timedelta(seconds=5)
+        'next_run_time': datetime.now() + timedelta(seconds=500000000)
     },
     'web_crawling': {
         'trigger': 'interval',
-        'minutes': 1000000000,
-        'next_run_time': datetime.now() + timedelta(seconds=10000000000)
+        'minutes': 10000,
+        'next_run_time': datetime.now() + timedelta(seconds=5)
     },
-
     'summary': {
         'trigger': 'interval',
         'minutes': 3,
-        'next_run_time': datetime.now() + timedelta(seconds=60)
+        'next_run_time': datetime.now() + timedelta(seconds=500000000)
     }
 }
 
