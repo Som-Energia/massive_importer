@@ -32,36 +32,36 @@ class Tasks:
         self.downloaded_list = self.wc.done_list
         self.date_download_task = datetime.now()
 
-    @db_session(optimistic=False) 
-    def check_new_events(self, impfs = None): 
-        if self.erp_manager == None : 
+    @db_session(optimistic=False)
+    def check_new_events(self, impfs = None):
+        if self.erp_manager == None :
             raise ValueError("There is no ERP Connection")
         logger.debug("Import zips process stating...")
         eventList = []
         if impfs is None:
             impfs = []
-            eventList = listEvents() 
-            if eventList:          
+            eventList = listEvents()
+            if eventList:
                 for event in eventList:
                     impf = None if checkEtag(event) else eventToImportFile(event)
-                    if impf: 
-                        impfs.append(impf) 
-                        logger.debug('Afegit l\'ImportFile %s a la llista!' % urllib.parse.unquote_plus(impf.name)) 
+                    if impf:
+                        impfs.append(impf)
+                        logger.debug('Afegit l\'ImportFile %s a la llista!' % urllib.parse.unquote_plus(impf.name))
                     else:
                         logger.error('L\'arxiu %s ja ha estat importat, es descarta!' % event)
             else: logger.debug("No Events pending")
 
-        if impfs:                  
-            with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor: 
-                future_to_events = {executor.submit(self.import_zips, impf): impf for impf in impfs}     
-                for future in concurrent.futures.as_completed(future_to_events): 
-                    event = future_to_events[future] 
+        if impfs:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+                future_to_events = {executor.submit(self.import_zips, impf): impf for impf in impfs}
+                for future in concurrent.futures.as_completed(future_to_events):
+                    event = future_to_events[future]
                     try:
-                        res = future.result() 
+                        res = future.result()
                     except Exception as e:
                         msg = "%r generated an exception: %s"
-                        logger.exception(msg, event, str(e)) 
-                    else: 
+                        logger.exception(msg, event, str(e))
+                    else:
                         logger.debug('%s generated with result: %r' % (event.name, res))
         else: logger.debug("No ImportFiles pending")
         logger.debug("Process done!")
@@ -70,15 +70,15 @@ class Tasks:
 
     @db_session
     def import_zips(self, impf):
-        updateState(impf, UpdateStatus.IN_PROCESS) 
-        content = None 
+        updateState(impf, UpdateStatus.IN_PROCESS)
+        content = None
         try:
-            content = self.minio_manager.get_file_content(impf.bucket, urllib.parse.unquote_plus(impf.name)) 
-        except Exception as e: 
-            updateState(impf, UpdateStatus.ERROR) 
-            msg = "Error getting file content from Minio bucket, generated an exception: %s" 
-            logger.exception(msg, impf.name, str(e)) 
-        else: 
+            content = self.minio_manager.get_file_content(impf.bucket, urllib.parse.unquote_plus(impf.name))
+        except Exception as e:
+            updateState(impf, UpdateStatus.ERROR)
+            msg = "Error getting file content from Minio bucket, generated an exception: %s"
+            logger.exception(msg, impf.name, str(e))
+        else:
             try:
                 res = self.erp_manager.import_wizard(urllib.parse.unquote_plus(impf.name), content, self.mutex)
                 if not res:
@@ -87,16 +87,16 @@ class Tasks:
                     else:
                         impf.retries = impf.retries +1
                         self.check_new_events([impf])
-                else:       
-                    updateState(impf, UpdateStatus.FINISHED) 
-                    return True 
-            except Exception as e: 
-                msg = "An error ocurred importing %s: %s" 
+                else:
+                    updateState(impf, UpdateStatus.FINISHED)
+                    return True
+            except Exception as e:
+                msg = "An error ocurred importing %s: %s"
                 logger.exception(msg, impf.name, str(e))
 
     @db_session
     def summary(self):
-        try: 
+        try:
             alert_manager = AlertManager(**settings.MAIL)
             today = date.today()
             i_date = datetime(today.year, today.month, today.day, 0, 0, 0)

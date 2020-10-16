@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 class MinioManager(object):
 
-    def __init__(self, endpoint, access_key, secret_key, default_bucket="zips", secure=False):
+    def __init__(self, endpoint, access_key, secret_key, default_bucket="atr", secure=False):
         self.default_bucket=default_bucket
         self.minio_client = Minio(
             endpoint=endpoint,

@@ -7,22 +7,6 @@ ERP = erp_conf
 SCRAPY_CRAWLERS = scrapy_crawlers_conf
 SELENIUM_CRAWLERS = selenium_crawlers_conf
 
-MINIO = {
-    'endpoint': 'localhost:9000',
-    'access_key': 'NJHXYRAAILTKUVSXWDP9',
-    'secret_key': 'IqoH+bHYxkfE8xvmLpMdaxjLGJkmhria3Qxi9Q73',
-    'secure': False
-}
-
-DATABASE = {
-    'provider': 'postgres',
-    'host': 'localhost',
-    'port': 5432,
-    'database': 'bucketevents_db',
-    'user': 'postgres',
-    'password': ''
-}
-
 MAIL = {
     'from_address': mail_conf['from_address'],
     'to_address': mail_conf['to_address'],

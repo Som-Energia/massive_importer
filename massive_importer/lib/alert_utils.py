@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import smtplib, urllib, datetime, ssl
 from email import message
 from email.mime.text import MIMEText
