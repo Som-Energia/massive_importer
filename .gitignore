@@ -7,3 +7,4 @@
 *.save
 Pipfile.lock
 Pipfile.save
+*.egg-info/
