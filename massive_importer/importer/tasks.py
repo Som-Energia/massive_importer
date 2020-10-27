@@ -7,7 +7,7 @@ from massive_importer.crawlers.run_crawlers import WebCrawler
 from massive_importer.lib.minio_utils import MinioManager
 from massive_importer.lib.alert_utils import AlertManager
 from massive_importer.lib.erp_utils import ErpManager
-from massive_importer.lib.db_utils import delete_events, checkEtag, listEvents, listImportFiles, listImportFiles_by_date_interval, updateState, eventToImportFile
+from massive_importer.lib.db_utils import delete_events, checkEtag, listEvents, listImportFiles, listCrawlingProcessErrors_by_date_interval, listImportFiles_by_date_interval, updateState, eventToImportFile
 from massive_importer.conf import configure_logging, settings
 from massive_importer.models.importer import Event, ImportFile, UpdateStatus
 from pony.orm import select, db_session, delete
@@ -103,7 +103,15 @@ class Tasks:
             f_date = i_date + timedelta(days=1)
             events = listEvents()
             impfs = listImportFiles_by_date_interval(i_date, f_date)
-            alert_manager.summary_send(self.date_events_task, i_date, f_date, events, impfs, self.date_download_task, self.downloaded_list)
+            errors = listCrawlingProcessErrors_by_date_interval(i_date, f_date)
+            alert_manager.summary_send(
+		self.date_events_task,
+		i_date,
+		f_date,
+		events,
+		impfs,
+               errors
+	    )
             alert_manager.close()
         except Exception as e:
             logger.error("Exception raised sending crawl summary: ", e)

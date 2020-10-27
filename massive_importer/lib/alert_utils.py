@@ -40,7 +40,7 @@ class AlertManager(object):
         except Exception as e:
             logger.error("Error sending alert: %s", e)
 
-    def summary_send(self, date_events_task, i_date, f_date, event_list, importfile_list, date_download_task, downloaded_list):
+    def summary_send(self, date_events_task, i_date, f_date, event_list, importfile_list, errors_list):
         def green_red_ok(state):
             if state == True: state = 'ok'
             if state == False: state = 'error'
@@ -57,26 +57,21 @@ class AlertManager(object):
         if i_date is None or f_date is None:
             raise TooFewArgumentsException('Too few arguments on summary send: dates missing')
         else:
-            events = []; importfiles = []; downloaded = []
-            for site in downloaded_list : downloaded.append(site + " < "+ green_red_ok(downloaded_list[site]) +" >")
+            events = []; importfiles = []; errors = []
             for event in event_list : events.append(event.key)
             for impf in importfile_list : importfiles.append(urllib.parse.unquote(impf.name) + " < " + green_red_ok(impf.state) +" >")
+            for error in errors_list : errors.append( "< " + green_red_ok('error') + " > " + error.crawler_name + ": " + error.exception_type + " --- " + error.description)
 
-            _events = ""; _impfs = ""; _dwnld = ""
+            _events = ""; _impfs = ""; _errors = ""
             if(events):
-                _events = "Casos pendents d'importar: <br>" + ("<br>".join(events)) +"<br>"
+                _events = "<br><b>WARNING: Hi ha fitxers que no s'han importat al erp:</b><br>" + ("<br>".join(events)) +"<br>"
             if(importfiles):
                 _impfs =  "Casos importats amb Estat: <br>" + ("<br>".join(importfiles)) +"<br>"
-            if(downloaded_list):
-                _dwnld = "Portals descarregats amb Estat: <br>" + ("<br>".join(downloaded)) +"<br>"
+            if(errors):
+                _errors =  "Errors durant la descàrrega de fitxers: <br>" + ("<br>".join(errors)) +"<br>"
 
-            download = ("PROCÉS DE DESCARREGA:" +"<br>"+
-                        "Darrera execució: " + last_date(date_download_task) +"<br>"
-                        "Casos descarregats: TOTS" + "<br>")
-            event_task = ("PROCÉS D'IMPORTACIÓ AL ERP:" + "<br>" +
-                    "Darrera execució: " + last_date(date_events_task) + "<br>"
-                    "Resum importacio amb l'interval " + i_date.strftime("%Y-%m-%d %H:%M:%S") + " fins el "+ f_date.strftime("%Y-%m-%d %H:%M:%S"))
-            html = "<html><head></head><body>"+ download + _dwnld +"<br>"+event_task + "<br>" + _events + "<br>" + _impfs + "</body></html>"
+            main_task = ("<b>RESUM DE DESCÀRREGA I IMPORTACIÓ AMB L'INTERVAL: " + i_date.strftime("%Y-%m-%d %H:%M:%S") + " fins el "+ f_date.strftime("%Y-%m-%d %H:%M:%S")) + "</b>"
+            html = "<html><head></head><body>"+ main_task + "<br><br>" + _impfs + "<br>" + _errors + "<br>" + _events + "</body></html>"
 
             part1 = MIMEText(html, "html")
             message = MIMEMultipart("alternative")

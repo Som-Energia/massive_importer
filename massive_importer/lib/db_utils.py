@@ -17,6 +17,11 @@ def listImportFiles_by_date_interval(i_date, f_date):
     return list(ret)
 
 @db_session
+def listCrawlingProcessErrors_by_date_interval(i_date, f_date):
+    ret = select(error for error in CrawlingProcessError if (error.created_at >= i_date and error.created_at < f_date))
+    return list(ret)
+
+@db_session
 def listEvents():
     ret = select(event for event in Event)
     return list(ret)

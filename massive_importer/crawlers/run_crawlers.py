@@ -81,8 +81,7 @@ class WebCrawler:
             logger.error("***Error uploading crawled file to Minio*** on {} process.".format(spider))
             raise e
         except Exception as e:
-            logger.error("Can't import %s module" % (spider))
-            raise ModuleImportingException(e)
+            raise e
 
     def check_downloaded_files(self):
         todayfolder = datetime.datetime.now().strftime("%d-%m-%Y")
