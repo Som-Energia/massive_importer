@@ -31,7 +31,8 @@ class ErpManager(object):
             import_wizard = WizardImportAtrF1.create(values)
             context = {'active_ids': [import_wizard.id], 'active_id': import_wizard.id}
             try:
-                res = import_wizard.action_import_xmls(context)
+                import_wizard.action_import_xmls(context)
+                res = import_wizard.action_send_xmls(context=context)
                 return (import_wizard.state == 'done' or import_wizard.state == 'load')
             except Exception as e:
                 msg = "An error ocurred importing %s: %s"
