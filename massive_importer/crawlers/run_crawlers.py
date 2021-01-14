@@ -14,9 +14,6 @@ class WebCrawler:
         self.minio_manager = MinioManager(**settings.MINIO)
         self.scrapy_crawlers = settings.SCRAPY_CRAWLERS
         self.selenium_crawlers = settings.SELENIUM_CRAWLERS
-        parent_path = os.path.dirname(os.path.abspath(__file__))
-        geckodriver_path = os.path.join(parent_path, 'crawlers/geckodriver/geckodriver')
-        sys.path.append(geckodriver_path)
         self.done_list = {}
         for elem in self.scrapy_crawlers: self.done_list[elem] = False
         for elem in self.selenium_crawlers: self.done_list[elem] = False
