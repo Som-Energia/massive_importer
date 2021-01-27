@@ -14,6 +14,8 @@ class WebCrawler:
         self.minio_manager = MinioManager(**settings.MINIO)
         self.scrapy_crawlers = settings.SCRAPY_CRAWLERS
         self.selenium_crawlers = settings.SELENIUM_CRAWLERS
+        self.scrapy_crawlers_conf = settings.SCRAPY_CRAWLERS_CONF
+        self.selenium_crawlers_conf = settings.SELENIUM_CRAWLERS_CONF
         self.done_list = {}
         for elem in self.scrapy_crawlers: self.done_list[elem] = False
         for elem in self.selenium_crawlers: self.done_list[elem] = False
@@ -68,7 +70,7 @@ class WebCrawler:
             spec.loader.exec_module(spider_module)
             logger.debug("Loaded %s module" % (spider))
             logger.debug("Starting %s crawling..." % (spider))
-            spider_instance = spider_module.instance()
+            spider_instance = spider_module.instance(self.selenium_crawlers_conf[spider])
             spider_instance.start()
         except CrawlingProcessException as e:
             logger.error("***Error in Crawling process***: {}".format(spider))

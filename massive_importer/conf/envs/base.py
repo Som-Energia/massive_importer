@@ -22,12 +22,20 @@ erp_conf = massive_importer_conf['erp']
 
 mail_conf = massive_importer_conf['mail']
 
-scrapy_crawlers_conf = []
-selenium_crawlers_conf = []
-for item in massive_importer_conf['crawlers']:
-    if massive_importer_conf['crawlers'][item] == 'Scrapy': scrapy_crawlers_conf.append(item)
-    if massive_importer_conf['crawlers'][item] == 'Selenium': selenium_crawlers_conf.append(item)
+scrapy_crawlers_conf = {}
+selenium_crawlers_conf = {}
 
+scrapy_crawlers_list = []
+selenium_crawlers_list = []
+
+for item in massive_importer_conf['crawlers']:
+    crawler_info = massive_importer_conf['crawlers'][item]
+    if crawler_info["crawler"] == 'Scrapy':
+        scrapy_crawlers_conf[item] = crawler_info
+        scrapy_crawler_list.append(item)
+    if crawler_info["crawler"] == 'Selenium':
+        selenium_crawlers_conf[item] = crawler_info
+        selenium_crawlers_list.append(item)
 # tasks_conf = massive_importer_conf['tasks']
 
 TMP_DIR = os.path.join(BASE_DIR, 'tmp')
