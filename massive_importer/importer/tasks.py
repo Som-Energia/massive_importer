@@ -22,7 +22,6 @@ class Tasks:
         self.date_events_task = None
         self.mutex = threading.Lock()
         self.downloaded_list = {}
-        self.MAX_NUM_RETRIES = 3
 
     def web_crawling(self):
         logger.debug("Crawl process starting... ")
@@ -82,17 +81,16 @@ class Tasks:
             try:
                 res = self.erp_manager.import_wizard(urllib.parse.unquote_plus(impf.name), content, self.mutex)
                 if not res:
-                    if impf.retries >= self.MAX_NUM_RETRIES:
-                        updateState(impf, UpdateStatus.ERROR)
-                    else:
-                        impf.retries = impf.retries +1
-                        self.check_new_events([impf])
+                    updateState(impf, UpdateStatus.WARNING)
+                    logger.debug('Algun error en l\'ImportFile %s' % (urllib.parse.unquote_plus(impf.name)))
                 else:
                     updateState(impf, UpdateStatus.FINISHED)
                     return True
             except Exception as e:
+                updateState(impf, UpdateStatus.ERROR)
                 msg = "An error ocurred importing %s: %s"
                 logger.exception(msg, impf.name, str(e))
+        return False
 
     @db_session
     def summary(self):

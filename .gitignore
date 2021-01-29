@@ -2,6 +2,7 @@
 *.log
 *.yaml
 *.ipynb*
+*.swp
 .cache
 .vscode
 *.save

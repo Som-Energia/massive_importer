@@ -13,6 +13,8 @@ class UpdateStatus(object):
 
     IN_PROCESS = 'in_process'
 
+    WARNING = 'warning'
+
     ERROR = 'error'
 
     FINISHED = 'ok'
@@ -44,8 +46,6 @@ class ImportFile(db.Entity):
     )
 
     size = Required(float)
-
-    retries = Required(int, default=0)
 
     msg = Optional(str)
 
