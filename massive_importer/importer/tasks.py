@@ -81,7 +81,7 @@ class Tasks:
             try:
                 res = self.erp_manager.import_wizard(urllib.parse.unquote_plus(impf.name), content, self.mutex)
                 if not res:
-                    updateState(impf, UpdateStatus.WARNING)
+                    updateState(impf, UpdateStatus.ERROR)
                     logger.debug('Algun error en l\'ImportFile %s' % (urllib.parse.unquote_plus(impf.name)))
                 else:
                     updateState(impf, UpdateStatus.FINISHED)
