@@ -33,15 +33,16 @@ mail:
   port: ''
   password: ''
 
-# Crawlers conf
+# Crawlers conf expecting 'Scrapy' or 'Selenium'
 crawlers:
-  endesa: ''
-  endesa_r: ''
-  iberdrola: ''
-  hc: ''
-  fenosa: ''
-  viesgo: ''
-  aseme: ''
-  cide: ''
-  conquense: ''
-  begasa: ''
+  testSpider: {crawler: '', days_of_margin: 3, pending_files_only: False, browser: 'chrome'}
+  endesa: {crawler: '', days_of_margin: 3,  pending_files_only: False, browser: 'chrome'}
+  endesa_r: {crawler: '', days_of_margin: 3,  pending_files_only: False, browser: 'chrome'}
+  iberdrola: {crawler: '', days_of_margin: 3,  pending_files_only: False, browser: 'chrome'}
+  hc: {crawler: '', days_of_margin: 3,  pending_files_only: False, browser: 'chrome'}
+  fenosa: {crawler: '', days_of_margin: 3,  pending_files_only: False, browser: 'chrome'}
+  viesgo: {crawler: '', days_of_margin: 3, D_days_of_margin: 1, pending_files_only: False, browser: 'chrome'}
+  aseme: {crawler: '', days_of_margin: 3,  pending_files_only: False, browser: 'chrome'}
+  cide: {crawler: '', days_of_margin: 3,  pending_files_only: False, browser: 'chrome'}
+  conquense: {crawler: '', days_of_margin: 3,  pending_files_only: False, browser: 'chrome'}
+  begasa: {crawler: '', days_of_margin: 3,  pending_files_only: False, browser: 'chrome'}

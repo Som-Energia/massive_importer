@@ -20,10 +20,9 @@ class Settings(object):
         for setting in dir(mod):
             if setting.isupper():
                 setattr(self, setting, getattr(mod, setting))
-
+        self.DEBUG_MODE = False
 
 settings = Settings(os.getenv(ENVIRONMENT_VARIABLE))
-
 
 def configure_logging(logging_config):
     from logging.config import dictConfig
