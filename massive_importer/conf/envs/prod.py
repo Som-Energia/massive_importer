@@ -20,23 +20,25 @@ EXECUTORS = {
 TASKS = {
     'web_crawling': {
         'trigger': 'cron',
-        'hour': 21,
-        'minutes': 0,
+        'day_of_week': '0-4',
+        'hour': 5,
+        'minute': 0,
     },
 
     'check_new_events': {
         'trigger': 'cron',
-        'hour': 22,
-        'minute': 0,
+        'day_of_week': '0-4',
+        'hour': 6,
+        'minute': 30,
     },
 
     'summary': {
         'trigger': 'cron',
-        'hour': 23,
-        'minutes': 30,
+        'day_of_week': '0-4',
+        'hour': 8,
+        'minute': 00,
     }
 }
-
 
 LOGGING = {
     'version': 1,
