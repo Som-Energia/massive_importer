@@ -62,50 +62,50 @@ class ImproperlyConfigured(MassiveImporterException):
     def __str__(self):
         return self.__repr__()
 
-class CrawlingProcessException(MassiveImporterException):
-    def __init__(self, msg):
-        super(CrawlingProcessException, self).__init__(msg)
-        self.msg = msg
+class CrawlingProcessException(Exception):
+    def __init__(self, msg, download_was_clicked=False):
+        dwc_msg = "[S'ha fet click a descarregar: {}]".format(download_was_clicked)
+        self.msg = '\n'.join([msg,dwc_msg])
+        #import pudb; pu.db
 
     def __repr__(self):
         return self.msg
 
     def __str__(self):
-        return super().__repr__()
+        return self.msg
 
 class CrawlingLoginException(CrawlingProcessException):
-    def __init__(self, msg):
-        super(CrawlingLoginException, self).__init__(msg)
-        self.msg = msg
+    def __init__(self, msg, download_was_clicked=False):
+        super(CrawlingLoginException, self).__init__(msg, download_was_clicked)
+        #self.msg = msg
 
     def __repr__(self):
         return self.msg
 
     def __str__(self):
-        return super().__repr__()
+        return self.msg
 
 class CrawlingFilteringException(CrawlingProcessException):
-    def __init__(self, msg):
-        super(CrawlingFilteringException, self).__init__(msg)
-        self.msg = msg
+    def __init__(self, msg, download_was_clicked=False):
+        super(CrawlingFilteringException, self).__init__(msg, download_was_clicked)
+        #self.msg = msg
 
     def __repr__(self):
         return self.msg
 
     def __str__(self):
-        return super().__repr__()
+        return self.msg
 
 class CrawlingDownloadingException(CrawlingProcessException):
-    def __init__(self, msg):
-        super(CrawlingDownloadingException, self).__init__(msg)
-        self.msg = msg
+    def __init__(self, msg, download_was_clicked=False):
+        super(CrawlingDownloadingException, self).__init__(msg, download_was_clicked)
+        #self.msg = msg
 
     def __repr__(self):
         return self.msg
 
     def __str__(self):
-        return super().__repr__()
-
+        return self.msg
 
 class FileToBucketException(MassiveImporterException):
     def __init__(self, msg):

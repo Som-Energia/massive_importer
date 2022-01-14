@@ -10,8 +10,10 @@ from massive_importer.importer.tasks import Tasks
 logger = logging.getLogger('massive_importer.conf')
 
 
-def build_app():
+def build_app(args):
     try:
+        if args.debug:
+            settings.DEBUG_MODE = True
         configure_logging(settings.LOGGING)
 
         db.bind(**settings.DATABASE)
