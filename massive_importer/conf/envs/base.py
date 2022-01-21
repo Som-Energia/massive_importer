@@ -10,7 +10,7 @@ BASE_DIR = os.path.dirname(
 
 try:
     with open(os.path.join(BASE_DIR, 'massive_importer/conf/config.yaml')) as f:
-        massive_importer_conf = yaml.load(f.read())
+        massive_importer_conf = yaml.load(f.read(), Loader=yaml.FullLoader)
 except Exception as e:
     raise ImproperlyConfigured(str(e))
 

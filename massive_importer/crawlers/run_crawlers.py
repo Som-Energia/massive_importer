@@ -71,7 +71,7 @@ class WebCrawler:
             logger.debug("Loaded %s module" % (spider))
             logger.debug("Starting %s crawling..." % (spider))
             spider_instance = spider_module.instance(self.selenium_crawlers_conf[spider])
-            spider_instance.start_with_timeout()
+            spider_instance.start_with_timeout() # ja esta posat with timeout
         except CrawlingProcessException as e:
             logger.error("***Error in Crawling process***: {}".format(spider))
             logger.error(str(e))

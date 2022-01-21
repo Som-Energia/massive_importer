@@ -1,10 +1,11 @@
 minio==6.0.0
-pony 
-psycopg2 
-ipython 
-APScheduler 
-PyYAML 
-scrapy-splash 
+pony
+psycopg2
+ipython
+APScheduler
+PyYAML
+scrapy-splash
 ERPpeek
 Scrapy
 selenium
+pyperclip
