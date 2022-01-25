@@ -55,13 +55,11 @@ class WebCrawler:
 
                 for crawler, future in futures.items():
                     if future.result()['has_error']:
-                        msg = "%r generated an exception: %s"
                         error = future.result()['error']
-                        logger.exception(msg, crawler, error)
+                        logger.error("**EXCEPTION**: {} generated: {}".format(crawler, error))
                         insert_crawling_process_error(crawler, error)
                     else:
                         logger.debug('%s process done successfully!' % (crawler))
-
         else:
             logger.debug("No Selenium Spider to crawl. ")
 
@@ -75,11 +73,8 @@ class WebCrawler:
             spider_instance = spider_module.instance(self.selenium_crawlers_conf[spider])
             spider_instance.start_with_timeout() # ja esta posat with timeout
         except CrawlingProcessException as e:
-            logger.error("***Error in Crawling process***: {}".format(spider))
-            logger.error(str(e))
             return({'has_error':True, 'error':str(e)})
         except FileToBucketException as e:
-            logger.error("***Error uploading crawled file to Minio*** on {} process.".format(spider))
             return({'has_error':True, 'error':str(e)})
         except Exception as e:
             return({'has_error':True, 'error':str(e)})

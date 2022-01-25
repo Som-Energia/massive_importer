@@ -27,6 +27,8 @@ class Event(db.Entity):
 
     value = Required(Json)
 
+    metadata = Optional(Json, nullable=True)
+
 
 class ImportFile(db.Entity):
     _table_ = 'import_file'

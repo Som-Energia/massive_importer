@@ -97,11 +97,13 @@ class Tasks:
         try:
             alert_manager = AlertManager(**settings.MAIL)
             today = date.today()
-            i_date = datetime(today.year, today.month, today.day, 0, 0, 0)
-            f_date = i_date + timedelta(days=1)
+            today_date_time = datetime(today.year, today.month, today.day, 0, 0, 0)
+            i_date = today_date_time - timedelta(days=10)
+            f_date = today_date_time
             events = listEvents()
             impfs = listImportFiles_by_date_interval(i_date, f_date)
             errors = listCrawlingProcessErrors_by_date_interval(i_date, f_date)
+            import pudb; pu.db
             alert_manager.summary_send(
 		self.date_events_task,
 		i_date,
