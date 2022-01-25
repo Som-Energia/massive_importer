@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from pickle import FALSE
 import smtplib, urllib, datetime, ssl
 from email import message
 from email.mime.text import MIMEText
@@ -41,31 +42,39 @@ class AlertManager(object):
             logger.error("Error sending alert: %s", e)
 
     def new_summary_send(self, date_events_task, i_date, f_date, event_list, importfile_list, errors_list):
-        
         if i_date is None or f_date is None:
             raise TooFewArgumentsException('Too few arguments on summary send: dates missing')
         else:
-            events = []; importfiles = []; errors = []
-            for event in event_list : events.append(event.key)
-            for impf in importfile_list : importfiles.append(urllib.parse.unquote(impf.name) + " < " + green_red_ok(impf.state) +" >")
-            for error in errors_list : errors.append( error.crawler_name + ": " + error.exception_type + " --- " + error.description)
+            crawlers = []
 
-            _events = ""; _impfs = ""; _errors = ""
-            if(events):
-                _events = "<br><b>WARNING: Hi ha fitxers que no s'han importat al erp:</b><br>" + ("<br>".join(events)) +"<br>"
-            if(importfiles):
-                _impfs =  "Casos importats amb Estat: <br>" + ("<br>".join(importfiles)) +"<br>"
-            if(errors):
-                _errors =  "Errors durant la descàrrega de fitxers: <br>" + ("<br>".join(errors)) +"<br>"
+            for event in event_list:
+                crawlers.append({
+                    'name' : event.metadata['portal'],
+                    'success' : False,
+                    'description': 'No s\'ha importat a l\'erp'
+                })
+            for impf in importfile_list:
+                crawlers.append({
+                    'name' : urllib.parse.unquote(impf.name),
+                    'success' : impf.state,
+                    'description': ''
+                })
 
-            main_task = ("<b>RESUM DE DESCÀRREGA I IMPORTACIÓ AMB L'INTERVAL: " + i_date.strftime("%Y-%m-%d %H:%M:%S") + " fins el "+ f_date.strftime("%Y-%m-%d %H:%M:%S")) + "</b>"
-            html = "<html><head></head><body>"+ main_task + "<br><br>" + _impfs + "<br>" + _errors + "<br>" + _events + "</body></html>"
+            for error in errors_list:
+                crawlers.append({
+                    'name' : error.crawler_name,
+                    'success' : False,
+                    'description': error.exception_type + ': ' + error.description
+                })
 
-            part1 = MIMEText(html, "html")
+            plantilla = Template(filename='../../daily_report.mako')
+            render = plantilla.render(crawlers)
+
+            part1 = MIMEText(render, "html")
             message = MIMEMultipart("alternative")
-            subject = "Resum importacio del dia " + i_date.strftime("%Y-%m-%d")
-            message.add_header('subject', subject)
+            message.add_header('subject', "Resum importacio del dia " + i_date.strftime("%Y-%m-%d"))
             message.attach(part1)
+
             context = ssl.create_default_context()
             with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
                 server.login(self.from_addr, self.passwd)
