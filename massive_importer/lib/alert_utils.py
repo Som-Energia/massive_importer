@@ -5,6 +5,7 @@ from email import message
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from massive_importer.lib.exceptions import TooFewArgumentsException
+from mako.template import Template
 
 import logging
 

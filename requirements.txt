@@ -9,3 +9,4 @@ ERPpeek
 Scrapy
 selenium
 pyperclip
+mako
