@@ -46,34 +46,45 @@ class AlertManager(object):
         if i_date is None or f_date is None:
             raise TooFewArgumentsException('Too few arguments on summary send: dates missing')
         else:
-            crawlers = []
+            interval = {
+                'inici':i_date.strftime("%d-%m-%Y %H:%M:%S"),
+                'final':i_date.strftime("%d-%m-%Y %H:%M:%S")
+            }
+
+            success = []
+            fail = []
 
             for event in event_list:
-                crawlers.append({
+                fail.append({
                     'name' : event.metadata['portal'],
                     'success' : False,
-                    'description': 'No s\'ha importat a l\'erp'
+                    'description': 'No s\'ha importat a l\'ERP'
                 })
             for impf in importfile_list:
-                crawlers.append({
-                    'name' : urllib.parse.unquote(impf.name),
-                    'success' : impf.state,
-                    'description': ''
-                })
+                correcte = impf.state == 'ok'
+                import_file = {
+                        'name' : urllib.parse.unquote(impf.name),
+                        'success' : correcte,
+                        'description': 'Importat correctament' if correcte else 'Hi ha hagut un error a l\'importar'
+                }
+                if correcte:
+                    correcte.append(import_file)
+                else:
+                    fail.append(import_file)
 
             for error in errors_list:
-                crawlers.append({
+                fail.append({
                     'name' : error.crawler_name,
                     'success' : False,
                     'description': error.exception_type + ': ' + error.description
                 })
 
-            plantilla = Template(filename='../../daily_report.mako')
-            render = plantilla.render(crawlers)
+            plantilla = Template(filename='../../templates/daily_report.mako')
+            render = plantilla.render(success = success, fail = fail, interval = interval)
 
             part1 = MIMEText(render, "html")
             message = MIMEMultipart("alternative")
-            message.add_header('subject', "Resum importacio del dia " + i_date.strftime("%Y-%m-%d"))
+            message.add_header('subject', "Resum importacio del dia " + i_date.strftime("%d-%m-%Y"))
             message.attach(part1)
 
             context = ssl.create_default_context()
