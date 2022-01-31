@@ -2,6 +2,7 @@
 <html>
 <head>
 <style>
+
 body {
   font-family: sans-serif;
 }
@@ -47,7 +48,6 @@ img {
 }
 
 div {
-  margin-top: 8px;
   padding: 12px;
   border-bottom: 2px solid #bac92c;
 }

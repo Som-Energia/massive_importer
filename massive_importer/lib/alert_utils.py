@@ -48,7 +48,7 @@ class AlertManager(object):
         else:
             interval = {
                 'inici':i_date.strftime("%d-%m-%Y %H:%M:%S"),
-                'final':i_date.strftime("%d-%m-%Y %H:%M:%S")
+                'final':f_date.strftime("%d-%m-%Y %H:%M:%S")
             }
 
             success = []
