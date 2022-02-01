@@ -21,17 +21,17 @@ TASKS = {
     'check_new_events': {
         'trigger': 'interval',
         'minutes': 1,
-        'next_run_time': datetime.now() + timedelta(seconds=500000000)
+        'next_run_time': datetime.now() + timedelta(seconds=5)
     },
     'web_crawling': {
         'trigger': 'interval',
         'minutes': 10000,
-        'next_run_time': datetime.now() + timedelta(seconds=50000)
+        'next_run_time': datetime.now() + timedelta(seconds=5)
     },
     'summary': {
         'trigger': 'interval',
         'minutes': 3,
-        'next_run_time': datetime.now() + timedelta(seconds=5)
+        'next_run_time': datetime.now() + timedelta(seconds=500000)
     }
 }
 
