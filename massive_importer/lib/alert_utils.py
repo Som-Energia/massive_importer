@@ -56,7 +56,7 @@ class AlertManager(object):
 
             for event in event_list:
                 fail.append({
-                    'name' : event.metadata['portal'],
+                    'name' : event.value['Records'][0]['s3']['object']['userMetadata']['X-Amz-Meta-Portal'],
                     'success' : False,
                     'description': 'No s\'ha importat a l\'ERP'
                 })

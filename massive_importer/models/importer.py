@@ -27,8 +27,6 @@ class Event(db.Entity):
 
     value = Required(Json)
 
-    metadata = Optional(Json, nullable=True)
-
 
 class ImportFile(db.Entity):
     _table_ = 'import_file'
@@ -40,6 +38,8 @@ class ImportFile(db.Entity):
     bucket = Required(str)
 
     name = Required(str, index='index_importfile_name')
+
+    portal = Optional(str)
 
     state = Required(
         str,

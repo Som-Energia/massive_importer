@@ -33,8 +33,9 @@ def eventToImportFile(event):
     eventetag = event.value['Records'][0]['s3']['object']['eTag']
     bucketname = event.value['Records'][0]['s3']['bucket']['name']
     eventsize = event.value['Records'][0]['s3']['object']['size']
+    eventportal = event.value['Records'][0]['s3']['object']['userMetadata']['X-Amz-Meta-Portal']
     try:
-        impf = ImportFile(etag=eventetag, name=eventname, bucket=bucketname, size=eventsize)
+        impf = ImportFile(etag=eventetag, name=eventname, bucket=bucketname, size=eventsize, portal=eventportal)
         return impf
     except Exception as e:
         raise EventToImportFileException(e)
