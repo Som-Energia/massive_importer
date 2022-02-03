@@ -3,4 +3,4 @@
 
 Tool for automatically download XML communications from Spanish electricity distribution companies websites.
 
-## Version v0.0.1
+## Version v1.0.0
