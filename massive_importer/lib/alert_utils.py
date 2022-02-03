@@ -57,13 +57,13 @@ class AlertManager(object):
             for event in event_list:
                 fail.append({
                     'name' : event.value['Records'][0]['s3']['object']['userMetadata']['X-Amz-Meta-Portal'],
-                    'description': 'S\'ha descarregat però no s\'ha importat a l\'ERP'
+                    'description': 'S\'ha descarregat però no s\'ha importat a l\'ERP \n [' +  event.key + ']'
                 })
             for impf in importfile_list:
                 correcte = impf.state == 'ok'
                 import_file = {
                         'name' : impf.portal,
-                        'description': 'Importat correctament' if correcte else 'S\'ha descarregat però hi ha hagut un error a l\'importar'
+                        'description': 'Importat correctament' if correcte else ('S\'ha descarregat però hi ha hagut un error a l\'importar \n [' +  urllib.parse.unquote(impf.name) + ']')
                 }
                 if correcte:
                     success.append(import_file)

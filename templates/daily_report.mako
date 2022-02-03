@@ -28,7 +28,7 @@
   </tr>
 % endfor
 </table>
-<div id="resum" style="padding: 12px;border-bottom: 2px solid #bac92c;">
+<div id="resum" style="margin-top: 4px; padding: 12px;border-bottom: 2px solid #bac92c;">
   <p><strong>Importats correctament:</strong> ${len(success)}</p>
   <p><strong>No s'han pogut importar:</strong> ${len(fail)}</p>
 </div>
