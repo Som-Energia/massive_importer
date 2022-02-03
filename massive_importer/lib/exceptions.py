@@ -66,7 +66,6 @@ class CrawlingProcessException(Exception):
     def __init__(self, msg, download_was_clicked=False):
         dwc_msg = "[S'ha fet click a descarregar: {}]".format(download_was_clicked)
         self.msg = '\n'.join([msg,dwc_msg])
-        #import pudb; pu.db
 
     def __repr__(self):
         return self.msg
@@ -77,7 +76,6 @@ class CrawlingProcessException(Exception):
 class CrawlingLoginException(CrawlingProcessException):
     def __init__(self, msg, download_was_clicked=False):
         super(CrawlingLoginException, self).__init__(msg, download_was_clicked)
-        #self.msg = msg
 
     def __repr__(self):
         return self.msg
@@ -88,7 +86,6 @@ class CrawlingLoginException(CrawlingProcessException):
 class CrawlingFilteringException(CrawlingProcessException):
     def __init__(self, msg, download_was_clicked=False):
         super(CrawlingFilteringException, self).__init__(msg, download_was_clicked)
-        #self.msg = msg
 
     def __repr__(self):
         return self.msg
@@ -99,7 +96,6 @@ class CrawlingFilteringException(CrawlingProcessException):
 class CrawlingDownloadingException(CrawlingProcessException):
     def __init__(self, msg, download_was_clicked=False):
         super(CrawlingDownloadingException, self).__init__(msg, download_was_clicked)
-        #self.msg = msg
 
     def __repr__(self):
         return self.msg

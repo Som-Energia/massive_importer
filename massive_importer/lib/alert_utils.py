@@ -3,7 +3,9 @@ import smtplib, urllib, datetime, ssl
 from email import message
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from email.mime.image import MIMEImage
 from massive_importer.lib.exceptions import TooFewArgumentsException
+from mako.template import Template
 
 import logging
 
@@ -41,43 +43,59 @@ class AlertManager(object):
             logger.error("Error sending alert: %s", e)
 
     def summary_send(self, date_events_task, i_date, f_date, event_list, importfile_list, errors_list):
-        def green_red_ok(state):
-            if state == True: state = 'ok'
-            if state == False: state = 'error'
-            if(state=='ok'):
-                return "<font color='#00ff00'>"+ state +"</font>"
-            else:
-                return "<font color='#FF0000'>"+ state +"</font>"
-        def last_date(date):
-            if date is None:
-                return 'Data no disponible'
-            else:
-                return date.strftime("%Y-%m-%d %H:%M:%S")
-
         if i_date is None or f_date is None:
             raise TooFewArgumentsException('Too few arguments on summary send: dates missing')
         else:
-            events = []; importfiles = []; errors = []
-            for event in event_list : events.append(event.key)
-            for impf in importfile_list : importfiles.append(urllib.parse.unquote(impf.name) + " < " + green_red_ok(impf.state) +" >")
-            for error in errors_list : errors.append( "< " + green_red_ok('error') + " > " + error.crawler_name + ": " + error.exception_type + " --- " + error.description)
+            interval = {
+                'inici':i_date.strftime("%d-%m-%Y %H:%M:%S"),
+                'final':f_date.strftime("%d-%m-%Y %H:%M:%S")
+            }
 
-            _events = ""; _impfs = ""; _errors = ""
-            if(events):
-                _events = "<br><b>WARNING: Hi ha fitxers que no s'han importat al erp:</b><br>" + ("<br>".join(events)) +"<br>"
-            if(importfiles):
-                _impfs =  "Casos importats amb Estat: <br>" + ("<br>".join(importfiles)) +"<br>"
-            if(errors):
-                _errors =  "Errors durant la descàrrega de fitxers: <br>" + ("<br>".join(errors)) +"<br>"
+            success = []
+            fail = []
 
-            main_task = ("<b>RESUM DE DESCÀRREGA I IMPORTACIÓ AMB L'INTERVAL: " + i_date.strftime("%Y-%m-%d %H:%M:%S") + " fins el "+ f_date.strftime("%Y-%m-%d %H:%M:%S")) + "</b>"
-            html = "<html><head></head><body>"+ main_task + "<br><br>" + _impfs + "<br>" + _errors + "<br>" + _events + "</body></html>"
+            for event in event_list:
+                fail.append({
+                    'name' : event.value['Records'][0]['s3']['object']['userMetadata']['X-Amz-Meta-Portal'],
+                    'description': 'S\'ha descarregat però no s\'ha importat a l\'ERP'
+                })
+            for impf in importfile_list:
+                correcte = impf.state == 'ok'
+                import_file = {
+                        'name' : impf.portal,
+                        'description': 'Importat correctament' if correcte else 'S\'ha descarregat però hi ha hagut un error a l\'importar'
+                }
+                if correcte:
+                    success.append(import_file)
+                else:
+                    fail.append(import_file)
 
-            part1 = MIMEText(html, "html")
+            for error in errors_list:
+                fail.append({
+                    'name' : error.crawler_name,
+                    'description': error.description
+                })
+
+            plantilla = Template(filename='templates/daily_report.mako')
+            render = plantilla.render(success = success, fail = fail, interval = interval)
+
+            fp = open('templates/success.png', 'rb')
+            success_img = MIMEImage(fp.read())
+            fp.close()
+            success_img.add_header('Content-ID', '<image1>')
+
+            fp = open('templates/fail.png', 'rb')
+            fail_img = MIMEImage(fp.read())
+            fp.close()
+            fail_img.add_header('Content-ID', '<image2>')
+
+            part1 = MIMEText(render, "html")
             message = MIMEMultipart("alternative")
-            subject = "Resum importacio del dia " + i_date.strftime("%Y-%m-%d")
-            message.add_header('subject', subject)
+            message.add_header('subject', "Resum importacio del dia " + i_date.strftime("%d-%m-%Y"))
             message.attach(part1)
+            message.attach(fail_img)
+            message.attach(success_img)
+
             context = ssl.create_default_context()
             with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
                 server.login(self.from_addr, self.passwd)

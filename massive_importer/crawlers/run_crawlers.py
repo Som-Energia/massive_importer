@@ -49,17 +49,17 @@ class WebCrawler:
 
         if self.selenium_crawlers:
             with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
-                crawl_list = {executor.submit(self.inicia, crawler): crawler for crawler in self.selenium_crawlers}
-                for future in concurrent.futures.as_completed(crawl_list):
-                    crwl = crawl_list[future]
-                    try:
-                        res = future.result()
-                    except Exception as e:
-                        msg = "%r generated an exception: %s"
-                        logger.exception(msg, crwl, e)
-                        insert_crawling_process_error(crwl, e)
+                futures = {}
+                for crawler in self.selenium_crawlers:
+                    futures[crawler] = (executor.submit(self.inicia, crawler))
+
+                for crawler, future in futures.items():
+                    if future.result()['has_error']:
+                        error = future.result()['error']
+                        logger.error("**EXCEPTION**: {} generated: {}".format(crawler, error))
+                        insert_crawling_process_error(crawler, error)
                     else:
-                        logger.debug('%s process done successfully!' % (crwl))
+                        logger.debug('%s process done successfully!' % (crawler))
         else:
             logger.debug("No Selenium Spider to crawl. ")
 
@@ -73,14 +73,13 @@ class WebCrawler:
             spider_instance = spider_module.instance(self.selenium_crawlers_conf[spider])
             spider_instance.start_with_timeout()
         except CrawlingProcessException as e:
-            logger.error("***Error in Crawling process***: {}".format(spider))
-            logger.error(str(e))
-            raise e
+            return({'has_error':True, 'error':str(e)})
         except FileToBucketException as e:
-            logger.error("***Error uploading crawled file to Minio*** on {} process.".format(spider))
-            raise e
+            return({'has_error':True, 'error':str(e)})
         except Exception as e:
-            raise e
+            return({'has_error':True, 'error':str(e)})
+        else:
+            return({'has_error':False})
 
     def check_downloaded_files(self):
         todayfolder = datetime.datetime.now().strftime("%d-%m-%Y")

@@ -39,6 +39,8 @@ class ImportFile(db.Entity):
 
     name = Required(str, index='index_importfile_name')
 
+    portal = Optional(str)
+
     state = Required(
         str,
         default=UpdateStatus.RDY_TO_PROCESS,

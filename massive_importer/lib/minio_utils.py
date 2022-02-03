@@ -1,4 +1,4 @@
-import logging, io
+import logging, io, json
 from minio import Minio
 from minio.error import ResponseError
 
@@ -39,9 +39,9 @@ class MinioManager(object):
             logger.debug('Longitud: %d', len(content))
             return content
 
-    def put_file(self, bucket, file_name, data):
+    def put_file(self, bucket, file_name, data, crawler_name=False):
         try:
-            self.minio_client.put_object(bucket, file_name, io.BytesIO(data), len(data))
+            self.minio_client.put_object(bucket, file_name, io.BytesIO(data), len(data), metadata={'portal':crawler_name})
         except ResponseError as e:
             msg = "An error occurred on put_file_content of %s from bucket %s: %s"
             logger.error(msg, file_name, bucket, e)
