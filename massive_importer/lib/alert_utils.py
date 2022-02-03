@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from pickle import FALSE
 import smtplib, urllib, datetime, ssl
 from email import message
 from email.mime.text import MIMEText

@@ -18,7 +18,7 @@ class Tasks:
         self.minio_manager = MinioManager(**settings.MINIO)
         self.erp_manager = ErpManager(**settings.ERP) if  erp_manager is None else erp_manager
         self.wc = WebCrawler() if web_crawler is None else web_crawler
-        self.date_download_task = None 
+        self.date_download_task = None
         self.date_events_task = None
         self.mutex = threading.Lock()
         self.downloaded_list = {}
@@ -103,7 +103,6 @@ class Tasks:
             events = listEvents()
             impfs = listImportFiles_by_date_interval(i_date, f_date)
             errors = listCrawlingProcessErrors_by_date_interval(i_date, f_date)
-            import pudb; pu.db
             alert_manager.summary_send(
 		self.date_events_task,
 		i_date,
