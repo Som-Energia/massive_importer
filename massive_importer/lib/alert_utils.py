@@ -56,7 +56,7 @@ class AlertManager(object):
 
             for event in event_list:
                 fail.append({
-                    'name' : event.value['Records'][0]['s3']['object']['userMetadata']['X-Amz-Meta-Portal'],
+                    'name' : event.value['Records'][0]['s3']['object']['userMetadata'].get('X-Amz-Meta-Portal', False),
                     'description': 'S\'ha descarregat però no s\'ha importat a l\'ERP'
                 })
             for impf in importfile_list:
