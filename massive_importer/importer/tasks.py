@@ -51,7 +51,7 @@ class Tasks:
             else: logger.debug("No Events pending")
 
         if impfs:
-            with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
                 future_to_events = {executor.submit(self.import_zips, impf): impf for impf in impfs}
                 for future in concurrent.futures.as_completed(future_to_events):
                     event = future_to_events[future]
