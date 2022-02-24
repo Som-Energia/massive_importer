@@ -36,13 +36,15 @@ mail:
 # Crawlers conf expecting 'Scrapy' or 'Selenium'
 crawlers:
   testSpider: {crawler: '', days_of_margin: 3, pending_files_only: False, browser: 'chrome'}
-  endesa: {crawler: '', days_of_margin: 3,  pending_files_only: False, browser: 'chrome'}
-  endesa_r: {crawler: '', days_of_margin: 3,  pending_files_only: False, browser: 'chrome'}
-  iberdrola: {crawler: '', days_of_margin: 3,  pending_files_only: False, browser: 'chrome'}
-  hc: {crawler: '', days_of_margin: 3,  pending_files_only: False, browser: 'chrome'}
-  fenosa: {crawler: '', days_of_margin: 3,  pending_files_only: False, browser: 'chrome'}
-  viesgo: {crawler: '', days_of_margin: 3, D_days_of_margin: 1, pending_files_only: False, browser: 'chrome'}
-  aseme: {crawler: '', days_of_margin: 3,  pending_files_only: False, browser: 'chrome'}
+  anselmo: {crawler: '', days_of_margin: 3,  pending_files_only: False, browser: 'chrome'}
   cide: {crawler: '', days_of_margin: 3,  pending_files_only: False, browser: 'chrome'}
-  conquense: {crawler: '', days_of_margin: 3,  pending_files_only: False, browser: 'chrome'}
-  begasa: {crawler: '', days_of_margin: 3,  pending_files_only: False, browser: 'chrome'}
+  endesa_r: {crawler: '', days_of_margin: 3,  pending_files_only: False, browser: 'chrome'}
+  endesa: {crawler: '', days_of_margin: 3,  pending_files_only: False, browser: 'chrome'}
+  enguerina: {crawler: '', days_of_margin: 3,  pending_files_only: False, browser: 'chrome'}
+  fenosa: {crawler: '', days_of_margin: 3,  pending_files_only: False, browser: 'chrome'}
+  hc: {crawler: '', days_of_margin: 3,  pending_files_only: False, browser: 'chrome'}
+  iberdrola: {crawler: '', days_of_margin: 3,  pending_files_only: False, browser: 'chrome'}
+  meliana: {crawler: '', days_of_margin: 3,  pending_files_only: False, browser: 'chrome'}
+  serrania: {crawler: '', days_of_margin: 3,  pending_files_only: False, browser: 'chrome'}
+  soller: {crawler: '', days_of_margin: 3,  pending_files_only: False, browser: 'chrome'}
+  viesgo: {crawler: '', days_of_margin: 3, D_days_of_margin: 1, pending_files_only: False, browser: 'chrome'}

@@ -55,9 +55,10 @@ class WebCrawler:
 
                 for crawler, future in futures.items():
                     if future.result()['has_error']:
-                        error = future.result()['error']
-                        logger.error("**EXCEPTION**: {} generated: {}".format(crawler, error))
-                        insert_crawling_process_error(crawler, error)
+                        exception = future.result()['exception']
+                        logger.error(
+                            "**EXCEPTION**: {} generated: {}".format(crawler, str(exception)))
+                        insert_crawling_process_error(crawler, exception)
                     else:
                         logger.debug('%s process done successfully!' % (crawler))
         else:
@@ -73,13 +74,13 @@ class WebCrawler:
             spider_instance = spider_module.instance(self.selenium_crawlers_conf[spider])
             spider_instance.start_with_timeout()
         except CrawlingProcessException as e:
-            return({'has_error':True, 'error':str(e)})
+            return({'has_error': True, 'exception': e})
         except FileToBucketException as e:
-            return({'has_error':True, 'error':str(e)})
+            return({'has_error': True, 'exception': e})
         except Exception as e:
-            return({'has_error':True, 'error':str(e)})
+            return({'has_error': True, 'exception': e})
         else:
-            return({'has_error':False})
+            return({'has_error': False})
 
     def check_downloaded_files(self):
         todayfolder = datetime.datetime.now().strftime("%d-%m-%Y")

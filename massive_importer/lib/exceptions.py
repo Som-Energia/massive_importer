@@ -75,7 +75,7 @@ class CrawlingProcessException(Exception):
 
 class CrawlingLoginException(CrawlingProcessException):
     def __init__(self, msg, download_was_clicked=False):
-        super(CrawlingLoginException, self).__init__(msg, download_was_clicked)
+        super(CrawlingLoginException, self).__init__("FENT LOGIN: " + msg, download_was_clicked)
 
     def __repr__(self):
         return self.msg
@@ -85,7 +85,7 @@ class CrawlingLoginException(CrawlingProcessException):
 
 class CrawlingFilteringException(CrawlingProcessException):
     def __init__(self, msg, download_was_clicked=False):
-        super(CrawlingFilteringException, self).__init__(msg, download_was_clicked)
+        super(CrawlingFilteringException, self).__init__("FILTRANT: " + msg, download_was_clicked)
 
     def __repr__(self):
         return self.msg
@@ -95,7 +95,7 @@ class CrawlingFilteringException(CrawlingProcessException):
 
 class CrawlingDownloadingException(CrawlingProcessException):
     def __init__(self, msg, download_was_clicked=False):
-        super(CrawlingDownloadingException, self).__init__(msg, download_was_clicked)
+        super(CrawlingDownloadingException, self).__init__("DESCARREGANT: " + msg, download_was_clicked)
 
     def __repr__(self):
         return self.msg
