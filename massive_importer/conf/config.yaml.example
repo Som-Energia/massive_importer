@@ -40,6 +40,7 @@ crawlers:
   cide: {crawler: '', days_of_margin: 3,  pending_files_only: False, browser: 'chrome'}
   endesa_r: {crawler: '', days_of_margin: 3,  pending_files_only: False, browser: 'chrome'}
   endesa: {crawler: '', days_of_margin: 3,  pending_files_only: False, browser: 'chrome'}
+  endesa_f1: {crawler: '', days_of_margin: 3,  pending_files_only: False, browser: 'chrome'}
   enguerina: {crawler: '', days_of_margin: 3,  pending_files_only: False, browser: 'chrome'}
   fenosa: {crawler: '', days_of_margin: 3,  pending_files_only: False, browser: 'chrome'}
   hc: {crawler: '', days_of_margin: 3,  pending_files_only: False, browser: 'chrome'}
