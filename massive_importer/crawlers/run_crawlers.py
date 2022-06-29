@@ -6,6 +6,7 @@ import sys
 import importlib
 import datetime
 import re
+import time
 from scrapy.crawler import CrawlerRunner, CrawlerProcess
 from massive_importer.conf import configure_logging, settings
 from massive_importer.lib.db_utils import insert_crawling_process_error
