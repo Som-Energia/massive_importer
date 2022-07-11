@@ -62,12 +62,13 @@ class WebCrawler:
         else:
             logger.debug("No Scrapy Spider to crawl. ")
 
-        if self.selenium_crawlers:
+        temp_selenium_crawlers = self.selenium_crawlers.copy()
+        if temp_selenium_crawlers:
             with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
                 futures = {}
-                execution_counter = {key: 0 for key in self.selenium_crawlers}
-                while self.selenium_crawlers:
-                    for crawler in self.selenium_crawlers:
+                execution_counter = {key: 0 for key in temp_selenium_crawlers}
+                while temp_selenium_crawlers:
+                    for crawler in temp_selenium_crawlers:
                         futures[crawler] = (
                             executor.submit(self.inicia, crawler))
 
@@ -82,20 +83,17 @@ class WebCrawler:
                             logger.error(
                                 "**EXCEPTION** {}: {} generated: {}".format(retry_msg, crawler, str(exception)))
                             insert_crawling_process_error(crawler, exception)
-                            if retry:
+                            if retry and execution_counter[crawler] < self.MAX_RETRIES:
                                 logger.debug(
                                     '%s added for a retry.' % (crawler))
                             else:
-                                self.selenium_crawlers.remove(crawler)
+                                temp_selenium_crawlers.remove(crawler)
                         else:
                             logger.debug(
                                 '%s process done successfully!' % (crawler))
-                            self.selenium_crawlers.remove(crawler)
+                            temp_selenium_crawlers.remove(crawler)
 
-                        if execution_counter[crawler] >= self.MAX_RETRIES:
-                            self.selenium_crawlers.remove(crawler)
-
-                    if self.selenium_crawlers:
+                    if temp_selenium_crawlers:
                         logger.info(
                             "Starting Selenium retry queue in 30 seconds...")
                         time.sleep(30)
@@ -116,11 +114,11 @@ class WebCrawler:
         except CrawlingLoginException as e:
             return({'has_error': True, 'exception': e, 'retry': False})
         except CrawlingProcessException as e:
-            return({'has_error': True, 'exception': e, 'retry': True})
+            return({'has_error': True, 'exception': e, 'retry': False})
         except FileToBucketException as e:
-            return({'has_error': True, 'exception': e, 'retry': True})
+            return({'has_error': True, 'exception': e, 'retry': False})
         except Exception as e:
-            return({'has_error': True, 'exception': e, 'retry': True})
+            return({'has_error': True, 'exception': e, 'retry': False})
         else:
             return({'has_error': False, 'retry': False})
 
