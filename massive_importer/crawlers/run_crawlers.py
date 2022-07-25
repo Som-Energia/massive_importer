@@ -120,7 +120,7 @@ class WebCrawler:
         except FileToBucketException as e:
             return({'has_error': True, 'exception': e, 'retry': True})
         except Exception as e:
-            return({'has_error': True, 'exception': e, 'retry': False})
+            return({'has_error': True, 'exception': e, 'retry': True})
         else:
             return({'has_error': False, 'retry': False})
 
