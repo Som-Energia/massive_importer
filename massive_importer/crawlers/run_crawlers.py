@@ -13,7 +13,7 @@ from massive_importer.lib.db_utils import insert_crawling_process_error
 import threading
 import concurrent.futures
 from massive_importer.lib.minio_utils import MinioManager
-from massive_importer.lib.exceptions import CrawlingProcessException, FileToBucketException, CrawlingLoginException
+from massive_importer.lib.exceptions import CrawlingProcessException, FileToBucketException, CrawlingLoginException, NoResultsException
 from tests.lib.testhelper import TestHelper
 logger = logging.getLogger(__name__)
 
@@ -111,12 +111,14 @@ class WebCrawler:
             spider_instance = spider_module.instance(
                 self.selenium_crawlers_conf[spider])
             spider_instance.start_with_timeout()
+        except NoResultsException as e:
+            return({'has_error': False, 'exception': e, 'retry': False})
         except CrawlingLoginException as e:
             return({'has_error': True, 'exception': e, 'retry': False})
         except CrawlingProcessException as e:
-            return({'has_error': True, 'exception': e, 'retry': False})
+            return({'has_error': True, 'exception': e, 'retry': True})
         except FileToBucketException as e:
-            return({'has_error': True, 'exception': e, 'retry': False})
+            return({'has_error': True, 'exception': e, 'retry': True})
         except Exception as e:
             return({'has_error': True, 'exception': e, 'retry': False})
         else:
