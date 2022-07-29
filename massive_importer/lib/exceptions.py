@@ -124,3 +124,13 @@ class ModuleImportingException(MassiveImporterException):
 
     def __str__(self):
         return super().__repr__()
+
+class NoResultsException(CrawlingProcessException):
+    def __init__(self, msg, download_was_clicked=False):
+        super(NoResultsException, self).__init__("SENSE RESULTATS: " + msg, download_was_clicked)
+
+    def __repr__(self):
+        return self.msg
+
+    def __str__(self):
+        return self.msg
