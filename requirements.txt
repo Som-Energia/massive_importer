@@ -10,3 +10,6 @@ Scrapy
 selenium
 pyperclip
 mako
+click
+Pillow
+twisted
