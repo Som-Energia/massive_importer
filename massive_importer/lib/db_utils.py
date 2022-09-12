@@ -58,10 +58,6 @@ def delete_events(eventList):
         for event in eventList:
             event.delete()
 
-@db_session
+
 def insert_crawling_process_error(crawler_name, e):
-    CrawlingProcessError(
-        crawler_name=crawler_name,
-        exception_type=str(e.__class__),
-        description=str(e)
-    )
+    raise e
