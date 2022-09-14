@@ -10,4 +10,4 @@ Pipfile.lock
 Pipfile.save
 *.egg-info/
 *tmp/
-massive_importer/crawlers/crawlers/spiders
+massive_importer/crawlers/crawlers/spiders/*
