@@ -7,7 +7,7 @@ PyYAML
 scrapy-splash
 ERPpeek
 Scrapy
-selenium
+selenium==3.141.0
 pyperclip
 mako
 click
